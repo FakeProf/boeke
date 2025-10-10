@@ -13,6 +13,8 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .app-container {
@@ -22,7 +24,10 @@ body {
     min-height: 100vh;
     box-shadow: 0 0 30px rgba(0,0,0,0.1);
     position: relative;
-    overflow-y: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 /* Header */
@@ -66,7 +71,7 @@ body {
     display: flex;
     background: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
-    overflow-x: auto;
+    overflow-x: visible;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -106,9 +111,8 @@ body {
 /* Main Content */
 .main-content {
     padding: 2rem;
-    min-height: 60vh;
-    overflow-y: auto;
-    max-height: calc(100vh - 200px);
+    flex: 1;
+    overflow: visible;
 }
 
 .tab-content {
@@ -502,7 +506,7 @@ body {
 
 .chat-messages {
     height: 300px;
-    overflow-y: auto;
+    overflow: visible;
     border: 1px solid #e9ecef;
     border-radius: 8px;
     padding: 1rem;

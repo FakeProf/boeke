@@ -1,0 +1,3295 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesMaster - Vertriebslernplattform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="enhanced-styles.css">
+    <link rel="stylesheet" href="modern-ui-styles.css">
+    <style>
+        /* Verbesserte Styles für übersichtlichere Navigation */
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            color: #6c757d;
+            min-width: 150px;
+            max-width: 200px;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .nav-tab i {
+            font-size: 1.5rem;
+        }
+
+        /* Verbesserte Karten-Layouts - 4 pro Reihe */
+        .training-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 1200px) {
+            .training-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .training-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .training-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .training-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #667eea;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .training-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .training-card h3 {
+            color: #667eea;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .training-card p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .training-card ul {
+            margin: 0.8rem 0;
+            padding-left: 1.2rem;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .training-card li {
+            margin-bottom: 0.3rem;
+        }
+
+        .training-card .btn {
+            width: 100%;
+            padding: 0.6rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .training-card .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Szenario-Karten - kompakter */
+        .scenario-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .scenario-card h4 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-card .difficulty {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-card .difficulty.beginner { background: #28a745; }
+        .scenario-card .difficulty.intermediate { background: #ffc107; color: #333; }
+        .scenario-card .difficulty.advanced { background: #dc3545; }
+
+        /* Fortschritts-Tracking */
+        .progress-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .skill-progress {
+            margin: 1rem 0;
+        }
+
+        .skill-progress h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+
+        .skill-percentage {
+            text-align: right;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Zertifizierungen */
+        .certification-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .certification-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        .certification-card .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* ==================== MODERN FOOTER ==================== */
+        .modern-footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            margin-top: auto;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .modern-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-section h4 {
+            color: #ecf0f1;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 1px;
+        }
+
+        .footer-section p {
+            color: #bdc3c7;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section ul li a:hover {
+            color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .footer-section ul li a::before {
+            content: '→';
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a:hover::before {
+            opacity: 1;
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Newsletter */
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input::placeholder {
+            color: #bdc3c7;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .newsletter-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Footer Bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: #bdc3c7;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        /* Responsive Footer */
+        @media (max-width: 1024px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-container {
+                padding: 2rem 1rem 0;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .footer-bottom-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-links {
+                gap: 1rem;
+            }
+            
+            .footer-links a {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ==================== INTERACTIVE LEARNING STYLES ==================== */
+        label:hover {
+            border-color: #667eea !important;
+            background: #f8f9fa !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        input[type="radio"]:checked + span {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        label:has(input[type="radio"]:checked) {
+            border-color: #667eea !important;
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        label:has(input[type="radio"]:checked) span {
+            color: white !important;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-line"></i> SalesMaster</h1>
+                <p>Deine 2-Minuten Vertriebsakademie</p>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <!-- Vereinfachte Navigation -->
+        <nav class="nav-tabs">
+            <div class="nav-tab active" data-tab="dashboard">
+                <i class="fas fa-home"></i> Dashboard
+            </div>
+            <div class="nav-tab" data-tab="training">
+                <i class="fas fa-graduation-cap"></i> Training
+            </div>
+            <div class="nav-tab" data-tab="practice">
+                <i class="fas fa-dumbbell"></i> Üben
+            </div>
+            <div class="nav-tab" data-tab="scenarios">
+                <i class="fas fa-theater-masks"></i> Szenarien
+            </div>
+            <div class="nav-tab" data-tab="progress">
+                <i class="fas fa-chart-line"></i> Fortschritt
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <div class="section-header">
+                    <h2>Willkommen bei SalesMaster</h2>
+                    <p>Deine persönliche Vertriebsakademie für 2-Minuten Lerneinheiten</p>
+                </div>
+
+                <div class="training-grid">
+                    <div class="training-card">
+                        <h3><i class="fas fa-graduation-cap"></i> Schnellstart</h3>
+                        <p>Beginne mit den Grundlagen des Verkaufs. Lerne Einwandbehandlung, Fragetechniken und Verkaufspsychologie.</p>
+                        <button class="btn" onclick="switchTab('training')">Training starten</button>
+                    </div>
+                    
+                    <div class="training-card">
+                        <h3><i class="fas fa-dumbbell"></i> Übungsmodus</h3>
+                        <p>Teste dein Wissen mit Quiz-Fragen, Karteikarten und interaktiven Übungen.</p>
+                        <button class="btn" onclick="switchTab('practice')">Jetzt üben</button>
+                    </div>
+                    
+                    <div class="training-card">
+                        <h3><i class="fas fa-theater-masks"></i> Verkaufsszenarien</h3>
+                        <p>Übe mit echten Verkaufssituationen aus verschiedenen Branchen und Zielgruppen.</p>
+                        <button class="btn" onclick="switchTab('scenarios')">Szenarien erkunden</button>
+                    </div>
+                    
+                    <div class="training-card">
+                        <h3><i class="fas fa-chart-line"></i> Fortschritt</h3>
+                        <p>Verfolge deinen Lernfortschritt, sammle Zertifizierungen und werde zum Sales Coach.</p>
+                        <button class="btn" onclick="switchTab('progress')">Fortschritt anzeigen</button>
+                    </div>
+                </div>
+
+                <!-- Heute lernen -->
+                <div class="progress-section">
+                    <h3><i class="fas fa-calendar-day"></i> Heute lernen</h3>
+                    <div class="training-grid">
+                        <div class="training-card">
+                            <h4>🎯 Tagesziel</h4>
+                            <p>3 Einwände meistern</p>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="width: 60%"></div>
+                            </div>
+                            <p class="skill-percentage">2/3 (60%)</p>
+                        </div>
+                        <div class="training-card">
+                            <h4>🏆 Streak</h4>
+                            <p>7 Tage in Folge</p>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="width: 100%"></div>
+                            </div>
+                            <p class="skill-percentage">Perfekt!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Tab -->
+            <div class="tab-content" id="training">
+                <div class="section-header">
+                    <h2>Vertriebs-Training</h2>
+                    <p>Lerne die Grundlagen des erfolgreichen Verkaufs</p>
+                </div>
+
+                <div class="training-grid">
+                    <div class="training-card">
+                        <h3><i class="fas fa-shield-alt"></i> Einwandbehandlung</h3>
+                        <p>Lerne, wie du die häufigsten Einwände professionell behandelst und in Verkaufschancen umwandelst.</p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>Preis-Einwände</li>
+                            <li>Zeit-Einwände</li>
+                            <li>Vertrauens-Einwände</li>
+                            <li>Konkurrenz-Einwände</li>
+                        </ul>
+                        <button class="btn" onclick="startModernQuiz('objection_handling', 'intermediate')">Training starten</button>
+                    </div>
+
+                    <div class="training-card">
+                        <h3><i class="fas fa-question-circle"></i> Fragetechniken</h3>
+                        <p>Meistere die Kunst der richtigen Fragen. SPIN-Selling, BANT-Qualifizierung und mehr.</p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>SPIN-Selling</li>
+                            <li>BANT-Qualifizierung</li>
+                            <li>Offene vs. geschlossene Fragen</li>
+                            <li>Funnel-Fragen</li>
+                        </ul>
+                        <button class="btn" onclick="startModernQuiz('question_techniques', 'intermediate')">Training starten</button>
+                    </div>
+
+                    <div class="training-card">
+                        <h3><i class="fas fa-brain"></i> Verkaufspsychologie</h3>
+                        <p>Verstehe die Psychologie hinter erfolgreichen Verkäufen und nutze sie zu deinem Vorteil.</p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>DISC-Persönlichkeitstypen</li>
+                            <li>Reziprozität</li>
+                            <li>Knappheit</li>
+                            <li>Sozialer Beweis</li>
+                        </ul>
+                        <button class="btn" onclick="startModernQuiz('psychology', 'intermediate')">Training starten</button>
+                    </div>
+
+                    <div class="training-card">
+                        <h3><i class="fas fa-comments"></i> Verkaufssprache</h3>
+                        <p>Lerne professionelle Formulierungen und vermeide Verkaufskiller-Wörter.</p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>Professionelle Formulierungen</li>
+                            <li>Themenablenkung</li>
+                            <li>Wert-Kommunikation</li>
+                            <li>Abschluss-Formulierungen</li>
+                        </ul>
+                        <button class="btn" onclick="startModernQuiz('language', 'intermediate')">Training starten</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Tab -->
+            <div class="tab-content" id="practice">
+                <div class="section-header">
+                    <h2>Übungsmodus</h2>
+                    <p>Teste und verbessere deine Verkaufskünste</p>
+                </div>
+
+                <div class="training-grid">
+                    <div class="training-card">
+                        <h3><i class="fas fa-brain"></i> Adaptives Quiz</h3>
+                        <p>Intelligentes Quiz mit Spaced Repetition und personalisierter Schwierigkeit.</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn" onclick="startAdvancedObjectionQuiz()">Einwände</button>
+                            <button class="btn" onclick="startAdvancedQuestionQuiz()">Fragen</button>
+                            <button class="btn" onclick="startAdvancedScenarioQuiz()">Rollenspiel</button>
+                        </div>
+                    </div>
+
+                    <div class="training-card">
+                        <h3><i class="fas fa-cards-blank"></i> Karteikarten</h3>
+                        <p>Lerne mit intelligenten Karteikarten. Schwierige Karten werden häufiger wiederholt.</p>
+                        <button class="btn" onclick="startFlashcards()">Karten starten</button>
+                    </div>
+
+                    <div class="training-card">
+                        <h3><i class="fas fa-theater-masks"></i> Rollenspiel</h3>
+                        <p>Übe Verkaufsgespräche in realistischen Szenarien mit verschiedenen Kundentypen.</p>
+                        <button class="btn" onclick="startRoleplay()">Rollenspiel starten</button>
+                    </div>
+
+                    <div class="training-card">
+                        <h3><i class="fas fa-trophy"></i> Herausforderung</h3>
+                        <p>Spezielle Übungen für Fortgeschrittene. Meistere komplexe Verkaufssituationen.</p>
+                        <button class="btn" onclick="startChallenge()">Herausforderung starten</button>
+                    </div>
+                    
+                    <div class="training-card">
+                        <h3><i class="fas fa-microphone"></i> Mikro-Learning</h3>
+                        <p>5-Minuten Lerneinheiten mit Storytelling und interaktiven Szenarien.</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn" onclick="startMicroLearning('objection_handling')">Einwände</button>
+                            <button class="btn" onclick="startMicroLearning('question_techniques')">SPIN</button>
+                        </div>
+                    </div>
+                    
+                    <div class="training-card">
+                        <h3><i class="fas fa-chart-line"></i> Lern-Insights</h3>
+                        <p>Personalisiertes Feedback und Empfehlungen für optimalen Lernerfolg.</p>
+                        <button class="btn" onclick="viewLearningInsights()">Insights anzeigen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenarios Tab -->
+            <div class="tab-content" id="scenarios">
+                <div class="section-header">
+                    <h2>Verkaufsszenarien</h2>
+                    <p>Übe mit echten Verkaufssituationen aus verschiedenen Branchen</p>
+                </div>
+
+                <!-- Branchen-Filter -->
+                <div style="margin: 2rem 0; text-align: center;">
+                    <h3>Wähle deine Branche:</h3>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
+                        <button class="btn" onclick="filterScenarios('all')" style="width: auto; padding: 0.5rem 1rem;">Alle</button>
+                        <button class="btn" onclick="filterScenarios('finance')" style="width: auto; padding: 0.5rem 1rem;">Finanzen</button>
+                        <button class="btn" onclick="filterScenarios('healthcare')" style="width: auto; padding: 0.5rem 1rem;">Gesundheit</button>
+                        <button class="btn" onclick="filterScenarios('education')" style="width: auto; padding: 0.5rem 1rem;">Bildung</button>
+                        <button class="btn" onclick="filterScenarios('logistics')" style="width: auto; padding: 0.5rem 1rem;">Logistik</button>
+                        <button class="btn" onclick="filterScenarios('sales')" style="width: auto; padding: 0.5rem 1rem;">Vertrieb</button>
+                        <button class="btn" onclick="filterScenarios('compliance')" style="width: auto; padding: 0.5rem 1rem;">Compliance</button>
+                    </div>
+                </div>
+
+                <!-- Szenario-Karten -->
+                <div id="scenariosContainer">
+					<div class="scenario-card">
+						<div class="difficulty beginner">Anfänger</div>
+						<h4>📊 Buchhaltung</h4>
+						<p><strong>Situation:</strong> Du präsentierst eine Lösung zur digitalen Belegverarbeitung. Die Buchhaltung zweifelt an GoBD-Konformität und Datenqualität.</p>
+						<p><strong>Herausforderung:</strong> Wie belegst du Compliance, Revisionssicherheit und reduzieren manuellen Aufwand?</p>
+						<button class="btn" onclick="startScenario('buchhaltung')">Szenario starten</button>
+					</div>
+
+					<div class="scenario-card">
+						<div class="difficulty intermediate">Fortgeschritten</div>
+						<h4>🩺 Pflege</h4>
+						<p><strong>Situation:</strong> In einer Pflegeeinrichtung soll ein neues Dienstplan-/Dokudystem eingeführt werden. Pflegekräfte befürchten Mehraufwand.</p>
+						<p><strong>Herausforderung:</strong> Wie adressierst du Akzeptanz, Schulung und Entlastung im Alltag?</p>
+						<button class="btn" onclick="startScenario('pflege')">Szenario starten</button>
+					</div>
+
+					<div class="scenario-card">
+						<div class="difficulty intermediate">Fortgeschritten</div>
+						<h4>🎒 Kita</h4>
+						<p><strong>Situation:</strong> Eine Kita prüft eine Elternkommunikations- und Abrechnungs-App. Leitung sorgt sich um Datenschutz und Bedienbarkeit.</p>
+						<p><strong>Herausforderung:</strong> Wie zeigst du Nutzen für Leitung, Team und Eltern bei minimalem Aufwand?</p>
+						<button class="btn" onclick="startScenario('kita')">Szenario starten</button>
+					</div>
+
+					<div class="scenario-card">
+						<div class="difficulty advanced">Experte</div>
+						<h4>🚢 Export</h4>
+						<p><strong>Situation:</strong> Ein Exportleiter benötigt eine Lösung für Ursprung, Präferenzen und Sanktionslisten. Er zweifelt an Integrationsfähigkeit.</p>
+						<p><strong>Herausforderung:</strong> Wie sicherst du Compliance, Automatisierung und Schnittstellen in ERP/ATLAS?</p>
+						<button class="btn" onclick="startScenario('export')">Szenario starten</button>
+					</div>
+
+					<div class="scenario-card">
+						<div class="difficulty beginner">Anfänger</div>
+						<h4>☎️ Sekretärin</h4>
+						<p><strong>Situation:</strong> Du rufst an und wirst vom Gatekeeper abgefangen. Kein Termin, wenig Zeit, strenge Filter.</p>
+						<p><strong>Herausforderung:</strong> Wie qualifizierst du smart und wirst zum Entscheider durchgestellt?</p>
+						<button class="btn" onclick="startScenario('sekretaerin')">Szenario starten</button>
+					</div>
+
+					<div class="scenario-card">
+						<div class="difficulty intermediate">Fortgeschritten</div>
+						<h4>🔒 Datenschutz</h4>
+						<p><strong>Situation:</strong> Ein DSB bewertet eure SaaS-Lösung. Er fragt nach TOMs, AVV, Löschkonzept, Subprozessoren.</p>
+						<p><strong>Herausforderung:</strong> Wie beantwortest du DSGVO-Anforderungen präzise und reduzierst Prüfaufwand?</p>
+						<button class="btn" onclick="startScenario('datenschutz')">Szenario starten</button>
+					</div>
+                </div>
+            </div>
+
+            <!-- Progress Tab -->
+            <div class="tab-content" id="progress">
+                <div class="section-header">
+                    <h2>Dein Fortschritt</h2>
+                    <p>Verfolge deinen Lernfortschritt und sammle Erfolge</p>
+                </div>
+
+                <!-- Gesamtfortschritt -->
+                <div class="progress-section">
+                    <h3><i class="fas fa-chart-pie"></i> Gesamtfortschritt</h3>
+                    <div class="skill-progress">
+                        <h4>Einwandbehandlung</h4>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 75%"></div>
+                        </div>
+                        <p class="skill-percentage">75%</p>
+                    </div>
+                    <div class="skill-progress">
+                        <h4>Fragetechniken</h4>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 60%"></div>
+                        </div>
+                        <p class="skill-percentage">60%</p>
+                    </div>
+                    <div class="skill-progress">
+                        <h4>Verkaufspsychologie</h4>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 45%"></div>
+                        </div>
+                        <p class="skill-percentage">45%</p>
+                    </div>
+                    <div class="skill-progress">
+                        <h4>Verkaufssprache</h4>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 80%"></div>
+                        </div>
+                        <p class="skill-percentage">80%</p>
+                    </div>
+                </div>
+
+                <!-- Zertifizierungen -->
+                <div class="progress-section">
+                    <h3><i class="fas fa-certificate"></i> Zertifizierungen</h3>
+                    <div class="certification-card">
+                        <h3>🏆 Einwandbehandlung-Meister</h3>
+                        <p>Du beherrschst alle wichtigen Einwandbehandlungstechniken!</p>
+                        <div class="badge">✅ Abgeschlossen</div>
+                    </div>
+                    <div class="certification-card" style="background: #e9ecef; color: #6c757d;">
+                        <h3>🎯 SPIN-Selling Experte</h3>
+                        <p>Lerne SPIN-Selling, um diese Zertifizierung zu erhalten.</p>
+                        <div class="badge" style="background: #6c757d;">⏳ In Bearbeitung</div>
+                    </div>
+                </div>
+
+                <!-- Statistiken -->
+                <div class="training-grid">
+                    <div class="training-card">
+                        <h3><i class="fas fa-fire"></i> Lernstreak</h3>
+                        <p style="font-size: 2rem; color: #667eea; margin: 1rem 0;">7 Tage</p>
+                        <p>Du lernst bereits 7 Tage in Folge!</p>
+                    </div>
+                    <div class="training-card">
+                        <h3><i class="fas fa-clock"></i> Lernzeit</h3>
+                        <p style="font-size: 2rem; color: #667eea; margin: 1rem 0;">2h 15m</p>
+                        <p>Diese Woche investiert</p>
+                    </div>
+                    <div class="training-card">
+                        <h3><i class="fas fa-trophy"></i> Erfolge</h3>
+                        <p style="font-size: 2rem; color: #667eea; margin: 1rem 0;">12</p>
+                        <p>Erfolge gesammelt</p>
+                    </div>
+                    <div class="training-card">
+                        <h3><i class="fas fa-star"></i> Level</h3>
+                        <p style="font-size: 2rem; color: #667eea; margin: 1rem 0;">5</p>
+                        <p>Vertriebs-Experte</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="modern-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>SalesMaster</h3>
+                        <p>Die intelligente Vertriebslernplattform für moderne Verkäufer. Lerne effektiv, verkaufe erfolgreich.</p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Lernbereiche</h4>
+                        <ul>
+                            <li><a href="#" onclick="switchTab('training')">Training</a></li>
+                            <li><a href="#" onclick="switchTab('practice')">Übungen</a></li>
+                            <li><a href="#" onclick="switchTab('scenarios')">Szenarien</a></li>
+                            <li><a href="#" onclick="switchTab('progress')">Fortschritt</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Features</h4>
+                        <ul>
+                            <li><a href="#">Adaptives Quiz</a></li>
+                            <li><a href="#">Spaced Repetition</a></li>
+                            <li><a href="#">Gamification</a></li>
+                            <li><a href="#">Analytics</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Kontakt</a></li>
+                        </ul>
+                    </div>
+                    
+                </div>
+                
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <p>&copy; 2025 SalesMaster. Alle Rechte vorbehalten.</p>
+                        <div class="footer-links">
+                            <a href="datenschutz.html">Datenschutz</a>
+                            <a href="impressum.html">Impressum</a>
+                            <a href="agb.html">AGB</a>
+                            <a href="cookies.html">Cookies</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer" id="timer">
+        <div class="timer-content">
+            <i class="fas fa-clock"></i>
+            <span id="timerText">00:00</span>
+            <button class="timer-btn" onclick="toggleTimer()">
+                <i class="fas fa-play" id="timerIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Vereinfachte JavaScript-Implementierung
+        let currentTab = 'dashboard';
+        let timerRunning = false;
+        let timerSeconds = 0;
+        let timerInterval;
+        
+        // Modal-Manager
+        let activeModal = null;
+        
+        function closeModal() {
+            if (activeModal) {
+                activeModal.remove();
+                activeModal = null;
+            }
+            // Zusätzlich: Entferne alle Modals die noch im DOM sind
+            const existingModals = document.querySelectorAll('div[style*="position: fixed"][style*="z-index: 1000"]');
+            existingModals.forEach(modal => modal.remove());
+        }
+        
+        function createModal(content, onClose = null) {
+            closeModal(); // Schließe vorherige Modals
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                align-items: center; justify-content: center; padding: 2rem;
+            `;
+            
+            modal.innerHTML = content;
+            document.body.appendChild(modal);
+            activeModal = modal;
+            
+            // Schließen bei Klick auf Hintergrund
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                    if (onClose) onClose();
+                }
+            });
+            
+            // Schließen bei Escape-Taste
+            const handleEscape = function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    if (onClose) onClose();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+            
+            return modal;
+        }
+
+        // Tab Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+
+        function switchTab(tabName) {
+            // Alle Tabs deaktivieren
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Aktiven Tab aktivieren
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            currentTab = tabName;
+            console.log('Tab gewechselt zu:', tabName);
+        }
+
+        // Voll funktionstüchtige Training-Funktionen
+        function startTraining(type) {
+            const trainingContent = getTrainingContent(type);
+            showTrainingModal(trainingContent);
+        }
+
+        function getTrainingContent(type) {
+            const trainings = {
+                'objections': {
+                    title: '🛡️ Einwandbehandlung Training',
+                    description: 'Lerne professionelle Einwandbehandlungstechniken',
+                    lessons: [
+                        {
+                            title: 'Preis-Einwände',
+                            content: 'Kunde: "Das ist zu teuer"',
+                            techniques: [
+                                'Wert-Kommunikation: "Lassen Sie uns über den Wert sprechen..."',
+                                'Kosten des Nicht-Handelns: "Was kostet Sie das Problem?"',
+                                'Zahlungspläne: "Wir können das in Raten anbieten"',
+                                'ROI-Berechnung: "Die Amortisation erfolgt in 6 Monaten"'
+                            ]
+                        },
+                        {
+                            title: 'Zeit-Einwände',
+                            content: 'Kunde: "Ich habe keine Zeit"',
+                            techniques: [
+                                'Zeit-Umleitung: "Genau deshalb ist es wichtig, jetzt zu handeln"',
+                                'Zeitersparnis: "Das spart Ihnen 2 Stunden pro Woche"',
+                                'Dringlichkeit: "Was passiert, wenn Sie warten?"',
+                                'Terminvereinbarung: "Wann haben Sie 15 Minuten?"'
+                            ]
+                        }
+                    ]
+                },
+                'questions': {
+                    title: '❓ Fragetechniken Training',
+                    description: 'Meistere die Kunst der richtigen Fragen',
+                    lessons: [
+                        {
+                            title: 'SPIN-Selling',
+                            content: 'Situation → Problem → Implication → Need-payoff',
+                            techniques: [
+                                'Situation: "Wie läuft das aktuell bei Ihnen?"',
+                                'Problem: "Was bereitet Ihnen Schwierigkeiten?"',
+                                'Implication: "Was passiert, wenn Sie nichts unternehmen?"',
+                                'Need-payoff: "Wie würde sich das für Sie auszahlen?"'
+                            ]
+                        }
+                    ]
+                },
+                'psychology': {
+                    title: '🧠 Verkaufspsychologie Training',
+                    description: 'Nutze die Psychologie für erfolgreiche Verkäufe',
+                    lessons: [
+                        {
+                            title: 'DISC-Persönlichkeitstypen',
+                            content: 'Anpassung an verschiedene Kundentypen',
+                            techniques: [
+                                'Dominant: Fokus auf Ergebnisse, Zeit sparen',
+                                'Influencer: Beziehungen, Anerkennung',
+                                'Steady: Sicherheit, Harmonie',
+                                'Conscientious: Details, Qualität'
+                            ]
+                        }
+                    ]
+                },
+                'language': {
+                    title: '💬 Verkaufssprache Training',
+                    description: 'Professionelle Formulierungen und Kommunikation',
+                    lessons: [
+                        {
+                            title: 'Professionelle Formulierungen',
+                            content: 'Vermeide Verkaufskiller-Wörter',
+                            techniques: [
+                                'Statt "Abo" → "Regelmäßige Partnerschaft"',
+                                'Statt "Kosten" → "Investition"',
+                                'Statt "Problem" → "Herausforderung"',
+                                'Statt "Billig" → "Kosteneffizient"'
+                            ]
+                        }
+                    ]
+                }
+            };
+            return trainings[type] || { title: 'Training', description: 'Lernen', lessons: [] };
+        }
+
+        function showTrainingModal(training) {
+            const content = `
+                <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 95vw; width: 1000px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="color: #667eea; margin: 0;">${training.title}</h2>
+                        <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                    <p style="color: #6c757d; margin-bottom: 2rem;">${training.description}</p>
+                    <div id="trainingLessons">
+                        ${training.lessons.map((lesson, index) => `
+                            <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem;">
+                                <h3 style="color: #667eea; margin-bottom: 1rem;">${lesson.title}</h3>
+                                <p style="color: #333; margin-bottom: 1rem; font-weight: 600;">${lesson.content}</p>
+                                <ul style="margin: 0; padding-left: 1.5rem;">
+                                    ${lesson.techniques.map(technique => `<li style="margin-bottom: 0.5rem; color: #6c757d;">${technique}</li>`).join('')}
+                                </ul>
+                                <button onclick="practiceLesson('${lesson.title}')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.6rem 1rem; cursor: pointer; margin-top: 1rem;">Üben</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            createModal(content);
+        }
+
+        function practiceLesson(lessonTitle) {
+            startInteractiveExercise(lessonTitle);
+        }
+
+        function startInteractiveExercise(lessonTitle) {
+            const exercises = {
+                'Preis-Einwände': {
+                    title: 'Preis-Einwände Übung',
+                    scenarios: [
+                        {
+                            situation: 'Kunde: "Das ist mir zu teuer"',
+                            challenge: 'Wie reagieren Sie professionell?',
+                            solutions: [
+                                'Wert-Kommunikation: "Lassen Sie uns über den Wert sprechen..."',
+                                'Kosten des Nicht-Handelns: "Was kostet Sie das Problem?"',
+                                'Zahlungspläne: "Wir können das in Raten anbieten"',
+                                'ROI-Berechnung: "Die Amortisation erfolgt in 6 Monaten"'
+                            ]
+                        }
+                    ]
+                },
+                'Zeit-Einwände': {
+                    title: 'Zeit-Einwände Übung',
+                    scenarios: [
+                        {
+                            situation: 'Kunde: "Ich habe keine Zeit für ein Gespräch"',
+                            challenge: 'Wie schaffen Sie Zeit für das Gespräch?',
+                            solutions: [
+                                'Zeit-Umleitung: "Genau deshalb ist es wichtig, jetzt zu handeln"',
+                                'Zeitersparnis: "Das spart Ihnen 2 Stunden pro Woche"',
+                                'Dringlichkeit: "Was passiert, wenn Sie warten?"',
+                                'Terminvereinbarung: "Wann haben Sie 15 Minuten?"'
+                            ]
+                        }
+                    ]
+                }
+            };
+            
+            const exercise = exercises[lessonTitle];
+            if (exercise) {
+                startScenarioExercise(exercise);
+            } else {
+                startGenericExercise(lessonTitle);
+            }
+        }
+
+        function startScenarioExercise(exercise) {
+            let currentScenario = 0;
+            
+            function showScenario() {
+                if (currentScenario < exercise.scenarios.length) {
+                    const scenario = exercise.scenarios[currentScenario];
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 95vw; width: 1000px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                                <h2 style="color: #667eea; margin: 0;">${exercise.title}</h2>
+                                <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                            </div>
+                            <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                <h3 style="color: #333; margin-bottom: 1rem;">Situation:</h3>
+                                <p style="color: #6c757d; margin-bottom: 1rem; font-weight: 600;">${scenario.situation}</p>
+                                <h3 style="color: #333; margin-bottom: 1rem;">Herausforderung:</h3>
+                                <p style="color: #6c757d;">${scenario.challenge}</p>
+                            </div>
+                            <h3 style="color: #667eea; margin-bottom: 1rem;">Wählen Sie Ihre Antwort:</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
+                                ${scenario.solutions.map((solution, index) => `
+                                    <button onclick="selectSolution(${index})" style="background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; padding: 1rem; cursor: pointer; text-align: left; transition: all 0.3s ease;">
+                                        ${solution}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: center;">
+                                <button onclick="nextScenario()" style="background: #6c757d; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Nächstes Szenario</button>
+                                <button onclick="closeModal()" style="background: #dc3545; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Beenden</button>
+                            </div>
+                            <p style="text-align: center; margin-top: 1rem; color: #6c757d;">Szenario ${currentScenario + 1} von ${exercise.scenarios.length}</p>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(modal);
+                    
+                    window.selectSolution = function(selectedIndex) {
+                        const buttons = modal.querySelectorAll('button[onclick^="selectSolution"]');
+                        buttons.forEach((btn, index) => {
+                            if (index === selectedIndex) {
+                                btn.style.background = '#d4edda';
+                                btn.style.borderColor = '#c3e6cb';
+                            } else {
+                                btn.style.opacity = '0.5';
+                            }
+                        });
+                        
+                        // Zeige Feedback
+                        const feedbackDiv = document.createElement('div');
+                        feedbackDiv.style.cssText = 'margin-top: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border: 1px solid #c3e6cb;';
+                        feedbackDiv.innerHTML = '<strong>Ausgezeichnet! ✅</strong><br>Das ist eine professionelle Antwort.';
+                        modal.querySelector('div').appendChild(feedbackDiv);
+                    };
+                    
+                    window.nextScenario = function() {
+                        modal.remove();
+                        currentScenario++;
+                        showScenario();
+                    };
+                } else {
+                    // Alle Szenarien durch
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #667eea; margin-bottom: 1rem;">Übung beendet! 🎉</h2>
+                            <p style="color: #6c757d; margin-bottom: 2rem;">Sie haben alle ${exercise.scenarios.length} Szenarien durchgearbeitet.</p>
+                            <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+            }
+            
+            showScenario();
+        }
+
+        function startGenericExercise(lessonTitle) {
+            // Erstelle echte Übungen für alle Lektionstypen
+            const exerciseData = {
+                'SPIN-Selling': {
+                    title: 'SPIN-Selling Übung',
+                    scenarios: [
+                        {
+                            situation: 'Sie verkaufen ein CRM-System an ein mittelständisches Unternehmen',
+                            challenge: 'Stellen Sie die richtige SPIN-Frage',
+                            solutions: [
+                                'Situation: "Wie läuft die Kundendatenverwaltung aktuell bei Ihnen?"',
+                                'Problem: "Was bereitet Ihnen die größten Schwierigkeiten?"',
+                                'Implication: "Was passiert, wenn Sie nichts unternehmen?"',
+                                'Need-payoff: "Wie würde sich das für Sie auszahlen?"'
+                            ]
+                        }
+                    ]
+                },
+                'DISC-Persönlichkeitstypen': {
+                    title: 'DISC-Persönlichkeitstypen Übung',
+                    scenarios: [
+                        {
+                            situation: 'Sie haben einen dominanten Kundentyp vor sich',
+                            challenge: 'Wie passen Sie Ihren Verkaufsansatz an?',
+                            solutions: [
+                                'Fokus auf Ergebnisse: "Das bringt Ihnen 30% mehr Effizienz"',
+                                'Zeit sparen: "Das spart Ihnen 2 Stunden pro Tag"',
+                                'Kontrolle betonen: "Sie behalten die volle Kontrolle"',
+                                'Direkte Kommunikation: "Lassen Sie mich Ihnen die Fakten zeigen"'
+                            ]
+                        }
+                    ]
+                },
+                'Professionelle Formulierungen': {
+                    title: 'Professionelle Formulierungen Übung',
+                    scenarios: [
+                        {
+                            situation: 'Kunde: "Das ist ein Abo, das will ich nicht"',
+                            challenge: 'Wie formulieren Sie das professionell um?',
+                            solutions: [
+                                'Statt "Abo" → "Regelmäßige Partnerschaft"',
+                                'Statt "Kosten" → "Investition"',
+                                'Statt "Problem" → "Herausforderung"',
+                                'Statt "Billig" → "Kosteneffizient"'
+                            ]
+                        }
+                    ]
+                },
+                'Reziprozität': {
+                    title: 'Reziprozität Übung',
+                    scenarios: [
+                        {
+                            situation: 'Kunde ist skeptisch und hat wenig Zeit',
+                            challenge: 'Wie nutzen Sie das Reziprozitätsprinzip?',
+                            solutions: [
+                                'Wertvollen Tipp geben: "Hier ist ein kostenloser Rat..."',
+                                'Kostenlose Analyse anbieten: "Ich analysiere Ihr Problem kostenlos"',
+                                'Referenz geben: "Ich kann Ihnen einen Kontakt vermitteln"',
+                                'Exklusives Angebot: "Nur für Sie habe ich ein spezielles Angebot"'
+                            ]
+                        }
+                    ]
+                },
+                'Knappheit': {
+                    title: 'Knappheit Übung',
+                    scenarios: [
+                        {
+                            situation: 'Kunde zögert bei der Entscheidung',
+                            challenge: 'Wie erzeugen Sie konstruktive Knappheit?',
+                            solutions: [
+                                'Zeitliche Knappheit: "Das Angebot gilt nur bis Freitag"',
+                                'Mengenknappheit: "Nur noch 3 Plätze verfügbar"',
+                                'Exklusivität: "Nur für ausgewählte Kunden"',
+                                'Saisonale Knappheit: "Bis Ende des Monats"'
+                            ]
+                        }
+                    ]
+                },
+                'Sozialer Beweis': {
+                    title: 'Sozialer Beweis Übung',
+                    scenarios: [
+                        {
+                            situation: 'Kunde ist unsicher über die Qualität',
+                            challenge: 'Wie nutzen Sie sozialen Beweis?',
+                            solutions: [
+                                'Kundenzahlen: "Über 500 Unternehmen vertrauen uns"',
+                                'Testimonials: "Hier ist was Kunde X sagt..."',
+                                'Referenzen: "Ähnliche Unternehmen wie Sie nutzen..."',
+                                'Erfolgsgeschichten: "Kunde Y hat 30% mehr Umsatz"'
+                            ]
+                        }
+                    ]
+                }
+            };
+            
+            const exercise = exerciseData[lessonTitle];
+            if (exercise) {
+                startScenarioExercise(exercise);
+            } else {
+                // Fallback für unbekannte Lektionen
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                    background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                    align-items: center; justify-content: center; padding: 2rem;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 600px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                        <h2 style="color: #667eea; margin-bottom: 1rem;">${lessonTitle} Übung</h2>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">Diese Übung wird gerade entwickelt...</p>
+                        <div style="background: #f8f9fa; border-radius: 10px; padding: 2rem; margin-bottom: 2rem;">
+                            <h3 style="color: #333; margin-bottom: 1rem;">Bald verfügbar:</h3>
+                            <ul style="text-align: left; color: #6c757d;">
+                                <li>Interaktive Szenarien</li>
+                                <li>Praktische Übungen</li>
+                                <li>Sofortiges Feedback</li>
+                                <li>Fortschritts-Tracking</li>
+                            </ul>
+                        </div>
+                        <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+        }
+
+        function startQuickQuiz() {
+            startModernQuiz('objection_handling', 'intermediate');
+        }
+
+        function startQuizGame(questions, title) {
+            let currentQuestion = 0;
+            let score = 0;
+            
+            function showQuestion() {
+                if (currentQuestion < questions.length) {
+                    const question = questions[currentQuestion];
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #667eea; margin-bottom: 1.5rem;">${title}</h2>
+                            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #333;">${question.question}</p>
+                            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                                ${question.options.map((option, index) => `
+                                    <button onclick="selectAnswer(${index})" style="background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; padding: 1rem; cursor: pointer; text-align: left; transition: all 0.3s ease;">
+                                        ${option}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <p style="text-align: center; margin-top: 1rem; color: #6c757d;">Frage ${currentQuestion + 1} von ${questions.length}</p>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(modal);
+                    
+                    window.selectAnswer = function(selectedIndex) {
+                        const isCorrect = selectedIndex === question.correct;
+                        if (isCorrect) score++;
+                        
+                        // Zeige Ergebnis
+                        const resultDiv = document.createElement('div');
+                        resultDiv.style.cssText = `
+                            margin-top: 1rem; padding: 1rem; background: ${isCorrect ? '#d4edda' : '#f8d7da'}; 
+                            border-radius: 8px; border: 1px solid ${isCorrect ? '#c3e6cb' : '#f5c6cb'};
+                        `;
+                        resultDiv.innerHTML = `
+                            <strong>${isCorrect ? 'Richtig! ✅' : 'Falsch! ❌'}</strong><br>
+                            ${question.explanation}
+                        `;
+                        modal.querySelector('div').appendChild(resultDiv);
+                        
+                        // Nächste Frage nach 2 Sekunden
+                        setTimeout(() => {
+                            modal.remove();
+                            currentQuestion++;
+                            showQuestion();
+                        }, 2000);
+                    };
+                } else {
+                    // Quiz beendet
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    const percentage = Math.round((score / questions.length) * 100);
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #667eea; margin-bottom: 1rem;">Quiz beendet!</h2>
+                            <p style="font-size: 1.2rem; margin-bottom: 1rem;">Richtig: ${score}/${questions.length} (${percentage}%)</p>
+                            <p style="color: #6c757d; margin-bottom: 2rem;">
+                                ${percentage >= 80 ? 'Ausgezeichnet! 🏆' : percentage >= 60 ? 'Gut! 👍' : 'Üben Sie weiter! 📚'}
+                            </p>
+                            <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+            }
+            
+            showQuestion();
+        }
+
+        function startFlashcards() {
+            startModernQuiz('psychology', 'beginner');
+        }
+
+        function startFlashcardGame(cards) {
+            let currentCard = 0;
+            let flipped = false;
+            
+            function showCard() {
+                if (currentCard < cards.length) {
+                    const card = cards[currentCard];
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 600px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #667eea; margin-bottom: 2rem;">Karteikarten</h2>
+                            <div id="cardContent" style="background: #f8f9fa; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                <p style="font-size: 1.2rem; color: #333; margin: 0;">${flipped ? card.back : card.front}</p>
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: center;">
+                                <button onclick="flipCard()" style="background: #667eea; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">${flipped ? 'Zurück' : 'Umdrehen'}</button>
+                                <button onclick="nextCard()" style="background: #28a745; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Nächste Karte</button>
+                                <button onclick="closeModal()" style="background: #6c757d; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Beenden</button>
+                            </div>
+                            <p style="text-align: center; margin-top: 1rem; color: #6c757d;">Karte ${currentCard + 1} von ${cards.length}</p>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(modal);
+                    
+                    window.flipCard = function() {
+                        flipped = !flipped;
+                        document.getElementById('cardContent').innerHTML = `<p style="font-size: 1.2rem; color: #333; margin: 0;">${flipped ? card.back : card.front}</p>`;
+                    };
+                    
+                    window.nextCard = function() {
+                        modal.remove();
+                        currentCard++;
+                        flipped = false;
+                        showCard();
+                    };
+                } else {
+                    // Alle Karten durch
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #667eea; margin-bottom: 1rem;">Alle Karten durch! 🎉</h2>
+                            <p style="color: #6c757d; margin-bottom: 2rem;">Sie haben alle ${cards.length} Karteikarten durchgearbeitet.</p>
+                            <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+            }
+            
+            showCard();
+        }
+
+        function startRoleplay() {
+            startModernRoleplay('objection_handling');
+        }
+
+        function startRoleplayGame(scenarios) {
+            let currentScenario = 0;
+            
+            function showRoleplayScenario() {
+                if (currentScenario < scenarios.length) {
+                    const scenario = scenarios[currentScenario];
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 95vw; width: 1000px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                                <h2 style="color: #667eea; margin: 0;">🎭 Rollenspiel</h2>
+                                <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                            </div>
+                            <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                <h3 style="color: #333; margin-bottom: 1rem;">${scenario.title}</h3>
+                                <h4 style="color: #667eea; margin-bottom: 1rem;">Situation:</h4>
+                                <p style="color: #6c757d; margin-bottom: 1rem; font-weight: 600;">${scenario.situation}</p>
+                                <h4 style="color: #667eea; margin-bottom: 1rem;">Herausforderung:</h4>
+                                <p style="color: #6c757d;">${scenario.challenge}</p>
+                            </div>
+                            <h3 style="color: #667eea; margin-bottom: 1rem;">Wählen Sie Ihre Antwort:</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
+                                ${scenario.solutions.map((solution, index) => `
+                                    <button onclick="selectRoleplaySolution(${index})" style="background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; padding: 1rem; cursor: pointer; text-align: left; transition: all 0.3s ease;">
+                                        ${solution}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: center;">
+                                <button onclick="nextRoleplayScenario()" style="background: #6c757d; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Nächstes Szenario</button>
+                                <button onclick="closeModal()" style="background: #dc3545; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Beenden</button>
+                            </div>
+                            <p style="text-align: center; margin-top: 1rem; color: #6c757d;">Szenario ${currentScenario + 1} von ${scenarios.length}</p>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(modal);
+                    
+                    window.selectRoleplaySolution = function(selectedIndex) {
+                        const buttons = modal.querySelectorAll('button[onclick^="selectRoleplaySolution"]');
+                        buttons.forEach((btn, index) => {
+                            if (index === selectedIndex) {
+                                btn.style.background = '#d4edda';
+                                btn.style.borderColor = '#c3e6cb';
+                            } else {
+                                btn.style.opacity = '0.5';
+                            }
+                        });
+                        
+                        // Zeige Feedback
+                        const feedbackDiv = document.createElement('div');
+                        feedbackDiv.style.cssText = 'margin-top: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border: 1px solid #c3e6cb;';
+                        feedbackDiv.innerHTML = '<strong>Ausgezeichnet! ✅</strong><br>Das ist eine professionelle Verkaufsantwort.';
+                        modal.querySelector('div').appendChild(feedbackDiv);
+                    };
+                    
+                    window.nextRoleplayScenario = function() {
+                        modal.remove();
+                        currentScenario++;
+                        showRoleplayScenario();
+                    };
+                } else {
+                    // Alle Szenarien durch
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #667eea; margin-bottom: 1rem;">Rollenspiel beendet! 🎭</h2>
+                            <p style="color: #6c757d; margin-bottom: 2rem;">Sie haben alle ${scenarios.length} Rollenspiel-Szenarien durchgearbeitet.</p>
+                            <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+            }
+            
+            showRoleplayScenario();
+        }
+
+        function startChallenge() {
+            startModernQuiz('objection_handling', 'expert');
+        }
+
+        function startChallengeGame(challenges) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                align-items: center; justify-content: center; padding: 2rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 700px; overflow: visible; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="color: #667eea; margin: 0;">🏆 Herausforderungen</h2>
+                        <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                    <p style="color: #6c757d; margin-bottom: 2rem;">Wählen Sie eine Herausforderung, um Ihre Verkaufsskills zu testen:</p>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        ${challenges.map((challenge, index) => `
+                            <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; border: 2px solid #e9ecef;">
+                                <h3 style="color: #333; margin-bottom: 0.5rem;">${challenge.title}</h3>
+                                <p style="color: #6c757d; margin-bottom: 1rem;">${challenge.description}</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <strong style="color: #667eea;">⏱️ Zeitlimit:</strong><br>
+                                        <span style="color: #6c757d;">${Math.floor(challenge.timeLimit / 60)} Minuten</span>
+                                    </div>
+                                    <div>
+                                        <strong style="color: #667eea;">🎯 Ziel:</strong><br>
+                                        <span style="color: #6c757d;">${challenge.goal}</span>
+                                    </div>
+                                </div>
+                                <button onclick="startSpecificChallenge(${index})" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer; width: 100%;">Herausforderung starten</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            window.startSpecificChallenge = function(challengeIndex) {
+                modal.remove();
+                const challenge = challenges[challengeIndex];
+                startSpecificChallengeGame(challenge);
+            };
+        }
+
+        function startSpecificChallengeGame(challenge) {
+            let timeLeft = challenge.timeLimit;
+            let currentTask = 0;
+            let completedTasks = 0;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                align-items: center; justify-content: center; padding: 2rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 95vw; width: 1000px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="color: #667eea; margin: 0;">🏆 ${challenge.title}</h2>
+                        <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <h3 style="color: #333; margin-bottom: 1rem;">Szenario:</h3>
+                        <p style="color: #6c757d; margin-bottom: 1rem;">${challenge.scenario}</p>
+                        <h3 style="color: #333; margin-bottom: 1rem;">Ziel:</h3>
+                        <p style="color: #6c757d;">${challenge.goal}</p>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="background: #e3f2fd; border-radius: 8px; padding: 1rem; flex: 1; margin-right: 1rem;">
+                            <h4 style="color: #1976d2; margin: 0 0 0.5rem 0;">⏱️ Verbleibende Zeit</h4>
+                            <p id="timeDisplay" style="color: #1976d2; font-size: 1.5rem; font-weight: bold; margin: 0;">${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}</p>
+                        </div>
+                        <div style="background: #e8f5e8; border-radius: 8px; padding: 1rem; flex: 1;">
+                            <h4 style="color: #2e7d32; margin: 0 0 0.5rem 0;">✅ Abgeschlossen</h4>
+                            <p id="progressDisplay" style="color: #2e7d32; font-size: 1.5rem; font-weight: bold; margin: 0;">${completedTasks}/${challenge.tasks.length}</p>
+                        </div>
+                    </div>
+                    <div id="challengeContent">
+                        <h3 style="color: #667eea; margin-bottom: 1rem;">Aktuelle Aufgabe:</h3>
+                        <div id="currentTask" style="background: #fff3cd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <p style="color: #856404; font-weight: 600;">${challenge.tasks[currentTask]}</p>
+                        </div>
+                        <button onclick="completeTask()" style="background: #28a745; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer; margin-right: 1rem;">Aufgabe erledigt</button>
+                        <button onclick="skipTask()" style="background: #6c757d; color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">Überspringen</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Timer
+            const timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeDisplay').textContent = `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endChallenge(false);
+                }
+            }, 1000);
+            
+            window.completeTask = function() {
+                completedTasks++;
+                currentTask++;
+                document.getElementById('progressDisplay').textContent = `${completedTasks}/${challenge.tasks.length}`;
+                
+                if (currentTask >= challenge.tasks.length) {
+                    clearInterval(timer);
+                    endChallenge(true);
+                } else {
+                    document.getElementById('currentTask').innerHTML = `<p style="color: #856404; font-weight: 600;">${challenge.tasks[currentTask]}</p>`;
+                }
+            };
+            
+            window.skipTask = function() {
+                currentTask++;
+                if (currentTask >= challenge.tasks.length) {
+                    clearInterval(timer);
+                    endChallenge(true);
+                } else {
+                    document.getElementById('currentTask').innerHTML = `<p style="color: #856404; font-weight: 600;">${challenge.tasks[currentTask]}</p>`;
+                }
+            };
+            
+            function endChallenge(success) {
+                modal.remove();
+                const resultModal = document.createElement('div');
+                resultModal.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                    background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                    align-items: center; justify-content: center; padding: 2rem;
+                `;
+                
+                const resultText = success ? 
+                    `🎉 Herausforderung erfolgreich abgeschlossen!<br>Sie haben ${completedTasks} von ${challenge.tasks.length} Aufgaben erledigt.` :
+                    `⏰ Zeit abgelaufen!<br>Sie haben ${completedTasks} von ${challenge.tasks.length} Aufgaben erledigt.`;
+                
+                resultModal.innerHTML = `
+                    <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                        <h2 style="color: ${success ? '#28a745' : '#dc3545'}; margin-bottom: 1rem;">${success ? 'Erfolgreich!' : 'Zeit abgelaufen!'}</h2>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">${resultText}</p>
+                        <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(resultModal);
+            }
+        }
+
+        function filterScenarios(industry) {
+            const scenarios = {
+                'all': [
+                    { id: 'buchhaltung', title: 'Buchhaltung - Digitale Belegverarbeitung', industry: 'finance', difficulty: 'beginner', description: 'Digitale Buchhaltungslösung mit GoBD-Konformität verkaufen' },
+                    { id: 'pflege', title: 'Pflege - Dienstplan- und Dokumentationssystem', industry: 'healthcare', difficulty: 'intermediate', description: 'Pflegesystem in Einrichtung einführen' },
+                    { id: 'kita', title: 'Kita - Elternkommunikations- und Abrechnungs-App', industry: 'education', difficulty: 'intermediate', description: 'Kita-App mit Datenschutz verkaufen' },
+                    { id: 'export', title: 'Export - Ursprung, Präferenzen und Sanktionslisten', industry: 'logistics', difficulty: 'advanced', description: 'Export-Compliance-Lösung verkaufen' },
+                    { id: 'sekretaerin', title: 'Sekretärin - Gatekeeper überwinden', industry: 'sales', difficulty: 'beginner', description: 'Gatekeeper überwinden und Termin vereinbaren' },
+                    { id: 'datenschutz', title: 'Datenschutz - DSB-Bewertung einer SaaS-Lösung', industry: 'compliance', difficulty: 'intermediate', description: 'DSGVO-konforme SaaS-Lösung verkaufen' }
+                ],
+                'finance': [
+                    { id: 'buchhaltung', title: 'Buchhaltung - Digitale Belegverarbeitung', industry: 'finance', difficulty: 'beginner', description: 'Digitale Buchhaltungslösung mit GoBD-Konformität verkaufen' }
+                ],
+                'healthcare': [
+                    { id: 'pflege', title: 'Pflege - Dienstplan- und Dokumentationssystem', industry: 'healthcare', difficulty: 'intermediate', description: 'Pflegesystem in Einrichtung einführen' }
+                ],
+                'education': [
+                    { id: 'kita', title: 'Kita - Elternkommunikations- und Abrechnungs-App', industry: 'education', difficulty: 'intermediate', description: 'Kita-App mit Datenschutz verkaufen' }
+                ],
+                'logistics': [
+                    { id: 'export', title: 'Export - Ursprung, Präferenzen und Sanktionslisten', industry: 'logistics', difficulty: 'advanced', description: 'Export-Compliance-Lösung verkaufen' }
+                ],
+                'sales': [
+                    { id: 'sekretaerin', title: 'Sekretärin - Gatekeeper überwinden', industry: 'sales', difficulty: 'beginner', description: 'Gatekeeper überwinden und Termin vereinbaren' }
+                ],
+                'compliance': [
+                    { id: 'datenschutz', title: 'Datenschutz - DSB-Bewertung einer SaaS-Lösung', industry: 'compliance', difficulty: 'intermediate', description: 'DSGVO-konforme SaaS-Lösung verkaufen' }
+                ]
+            };
+            
+            const filteredScenarios = scenarios[industry] || scenarios['all'];
+            displayFilteredScenarios(filteredScenarios, industry);
+        }
+
+        function displayFilteredScenarios(scenarios, industry) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                align-items: center; justify-content: center; padding: 2rem;
+            `;
+            
+            const industryNames = {
+                'all': 'Alle Branchen',
+                'it': 'IT & Software',
+                'pharma': 'Pharma',
+                'automotive': 'Automotive',
+                'consulting': 'Beratung'
+            };
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 95vw; width: 1000px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="color: #667eea; margin: 0;">🎯 ${industryNames[industry]} - Szenarien</h2>
+                        <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                    <p style="color: #6c757d; margin-bottom: 2rem;">Wählen Sie ein Szenario zum Üben:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                        ${scenarios.map(scenario => `
+                            <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; border: 2px solid #e9ecef; transition: all 0.3s ease;">
+                                <h3 style="color: #333; margin-bottom: 0.5rem;">${scenario.title}</h3>
+                                <p style="color: #6c757d; margin-bottom: 1rem;">${scenario.description}</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <span class="difficulty ${scenario.difficulty}" style="padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600;">
+                                        ${scenario.difficulty === 'beginner' ? 'Anfänger' : scenario.difficulty === 'intermediate' ? 'Fortgeschritten' : 'Experte'}
+                                    </span>
+                                    <span style="color: #6c757d; font-size: 0.9rem;">${scenario.industry.toUpperCase()}</span>
+                                </div>
+                                <button onclick="startScenario('${scenario.id}')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer; width: 100%;">Szenario starten</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function startScenario(scenarioId) {
+            const scenarioData = {
+                'software-b2b': {
+                    title: 'B2B Software-Verkauf',
+                    situation: 'Sie verkaufen ein CRM-System an ein mittelständisches Unternehmen',
+                    challenge: 'Der IT-Leiter ist skeptisch und hat Budget-Beschränkungen',
+                    goal: 'Vertrag über 50.000€ abschließen',
+                    timeLimit: 15,
+                    stakeholders: ['IT-Leiter', 'Geschäftsführer', 'Einkauf'],
+                    objections: ['Preis zu hoch', 'Implementierung zu komplex', 'Keine Zeit'],
+                    questions: [
+                        'Wie läuft die Kundendatenverwaltung aktuell?',
+                        'Was sind Ihre größten Herausforderungen?',
+                        'Welches Budget haben Sie dafür?',
+                        'Wer trifft die finale Entscheidung?'
+                    ]
+                },
+                'pharma': {
+                    title: 'Pharma-Vertrieb',
+                    situation: 'Sie verkaufen Medizinprodukte an eine Klinik',
+                    challenge: 'Strenge Compliance-Anforderungen und lange Entscheidungsprozesse',
+                    goal: 'Liefervertrag über 200.000€ abschließen',
+                    timeLimit: 20,
+                    stakeholders: ['Chefarzt', 'Einkauf', 'Compliance'],
+                    objections: ['Zu teuer', 'Compliance-Risiko', 'Lange Lieferzeiten'],
+                    questions: [
+                        'Welche Medizinprodukte nutzen Sie aktuell?',
+                        'Wie ist Ihr Beschaffungsprozess?',
+                        'Welche Compliance-Anforderungen haben Sie?',
+                        'Wer ist der Entscheidungsträger?'
+                    ]
+                },
+                'buchhaltung': {
+                    title: 'Buchhaltung - Digitale Belegverarbeitung',
+                    situation: 'Sie präsentieren eine Lösung zur digitalen Belegverarbeitung an ein mittelständisches Unternehmen',
+                    challenge: 'Die Buchhaltung zweifelt an GoBD-Konformität und Datenqualität',
+                    goal: 'Vertrag über 15.000€/Jahr für digitale Buchhaltungslösung abschließen',
+                    timeLimit: 12,
+                    stakeholders: ['Buchhalter', 'Geschäftsführer', 'Steuerberater'],
+                    objections: ['GoBD-Konformität unklar', 'Zu teuer für kleine Firma', 'Datenschutz-Bedenken', 'Zu komplex'],
+                    questions: [
+                        'Wie verwalten Sie aktuell Ihre Belege?',
+                        'Welche GoBD-Anforderungen sind Ihnen wichtig?',
+                        'Wie hoch ist Ihr manueller Aufwand?',
+                        'Wer prüft Ihre Buchhaltung?'
+                    ]
+                },
+                'pflege': {
+                    title: 'Pflege - Dienstplan- und Dokumentationssystem',
+                    situation: 'Sie führen ein neues Dienstplan-/Dokumentationssystem in einer Pflegeeinrichtung ein',
+                    challenge: 'Pflegekräfte befürchten Mehraufwand und technische Komplexität',
+                    goal: 'System erfolgreich einführen und Akzeptanz schaffen',
+                    timeLimit: 18,
+                    stakeholders: ['Pflegedienstleitung', 'Pflegekräfte', 'Geschäftsführung'],
+                    objections: ['Zu kompliziert', 'Mehraufwand im Alltag', 'Technik-Probleme', 'Schulungsaufwand'],
+                    questions: [
+                        'Wie planen Sie aktuell Ihre Dienste?',
+                        'Welche Dokumentation ist gesetzlich erforderlich?',
+                        'Wie technikaffin ist Ihr Team?',
+                        'Welche Entlastung wünschen Sie sich?'
+                    ]
+                },
+                'kita': {
+                    title: 'Kita - Elternkommunikations- und Abrechnungs-App',
+                    situation: 'Eine Kita prüft eine Elternkommunikations- und Abrechnungs-App',
+                    challenge: 'Leitung sorgt sich um Datenschutz und Bedienbarkeit',
+                    goal: 'App erfolgreich einführen und Eltern zufriedenstellen',
+                    timeLimit: 15,
+                    stakeholders: ['Kita-Leitung', 'Erzieher', 'Eltern', 'Träger'],
+                    objections: ['Datenschutz-Bedenken', 'Zu teuer', 'Eltern nutzen es nicht', 'Zu kompliziert'],
+                    questions: [
+                        'Wie kommunizieren Sie aktuell mit Eltern?',
+                        'Welche Datenschutz-Anforderungen haben Sie?',
+                        'Wie technikaffin sind Ihre Eltern?',
+                        'Welche Abrechnungsprozesse sind problematisch?'
+                    ]
+                },
+                'export': {
+                    title: 'Export - Ursprung, Präferenzen und Sanktionslisten',
+                    situation: 'Ein Exportleiter benötigt eine Lösung für Ursprung, Präferenzen und Sanktionslisten',
+                    challenge: 'Er zweifelt an Integrationsfähigkeit und Compliance-Sicherheit',
+                    goal: 'Export-Compliance-Lösung für 50.000€/Jahr verkaufen',
+                    timeLimit: 25,
+                    stakeholders: ['Exportleiter', 'Compliance', 'IT-Leiter', 'Geschäftsführung'],
+                    objections: ['Integration zu komplex', 'Zu teuer', 'Compliance-Risiko', 'Lange Implementierung'],
+                    questions: [
+                        'Wie handhaben Sie aktuell Ursprungsnachweise?',
+                        'Welche ERP-Systeme nutzen Sie?',
+                        'Welche Länder exportieren Sie?',
+                        'Wie prüfen Sie Sanktionslisten?'
+                    ]
+                },
+                'sekretaerin': {
+                    title: 'Sekretärin - Gatekeeper überwinden',
+                    situation: 'Sie rufen an und werden vom Gatekeeper abgefangen',
+                    challenge: 'Kein Termin, wenig Zeit, strenge Filter - Sie müssen zum Entscheider durchkommen',
+                    goal: 'Termin mit Entscheider vereinbaren',
+                    timeLimit: 8,
+                    stakeholders: ['Sekretärin', 'Entscheider', 'Assistent'],
+                    objections: ['Keine Zeit', 'Nicht interessiert', 'Bereits Anbieter', 'Zu teuer'],
+                    questions: [
+                        'Ist Herr/Frau [Name] verfügbar?',
+                        'Wann wäre ein guter Zeitpunkt?',
+                        'Welche Herausforderungen hat das Unternehmen?',
+                        'Wer trifft Entscheidungen zu [Thema]?'
+                    ]
+                },
+                'datenschutz': {
+                    title: 'Datenschutz - DSB-Bewertung einer SaaS-Lösung',
+                    situation: 'Ein DSB bewertet eure SaaS-Lösung auf DSGVO-Konformität',
+                    challenge: 'Er fragt nach TOMs, AVV, Löschkonzept und Subprozessoren',
+                    goal: 'DSB-Zustimmung und Vertrag über 30.000€/Jahr erhalten',
+                    timeLimit: 20,
+                    stakeholders: ['DSB', 'Geschäftsführung', 'IT-Leiter', 'Rechtsabteilung'],
+                    objections: ['DSGVO-Risiko', 'Subprozessoren unklar', 'Löschkonzept unzureichend', 'AVV fehlt'],
+                    questions: [
+                        'Welche Daten verarbeiten Sie?',
+                        'Wie ist Ihr aktueller Datenschutz organisiert?',
+                        'Welche Subprozessoren nutzen Sie?',
+                        'Wie lange speichern Sie Daten?'
+                    ]
+                }
+            };
+            
+            const scenario = scenarioData[scenarioId];
+            if (scenario) {
+                startScenarioGame(scenario);
+            } else {
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                    background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                    align-items: center; justify-content: center; padding: 2rem;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                        <h2 style="color: #dc3545; margin-bottom: 1rem;">Szenario nicht gefunden!</h2>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">Das gewählte Szenario ist nicht verfügbar.</p>
+                        <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+        }
+
+        function startScenarioGame(scenario) {
+            let currentPhase = 0;
+            const phases = ['Situation', 'Stakeholder', 'Fragen', 'Einwände', 'Abschluss'];
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                align-items: center; justify-content: center; padding: 2rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 1.5rem; max-width: 95vw; width: 1200px; max-height: 95vh; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-shrink: 0;">
+                        <h2 style="color: #667eea; margin: 0; font-size: 1.5rem;">🎯 ${scenario.title}</h2>
+                        <button onclick="closeModal()" style="background: #f8f9fa; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; flex-shrink: 0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 0.5rem; font-size: 1rem;">📋 Situation:</h3>
+                                <p style="color: #6c757d; line-height: 1.4; font-size: 0.95rem;">${scenario.situation}</p>
+                            </div>
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 0.5rem; font-size: 1rem;">🎯 Herausforderung:</h3>
+                                <p style="color: #6c757d; line-height: 1.4; font-size: 0.95rem;">${scenario.challenge}</p>
+                            </div>
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 0.5rem; font-size: 1rem;">🏆 Ziel:</h3>
+                                <p style="color: #6c757d; line-height: 1.4; font-size: 0.95rem; margin-bottom: 0.5rem;">${scenario.goal}</p>
+                                <div style="background: #e3f2fd; border-radius: 6px; padding: 0.5rem; text-align: center;">
+                                    <span style="color: #1976d2; font-size: 0.9rem; font-weight: bold;">⏱️ ${scenario.timeLimit} Min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1rem; flex-shrink: 0;">
+                        <div style="background: #e8f5e8; border-radius: 6px; padding: 0.8rem 1.5rem; text-align: center;">
+                            <span style="color: #2e7d32; font-size: 1rem; font-weight: bold;">📋 ${phases[currentPhase]}</span>
+                        </div>
+                    </div>
+                    <div id="scenarioContent" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                        <div id="phaseContent" style="background: #fff3cd; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; flex: 1; overflow: visible;">
+                            <!-- Phase content wird hier eingefügt -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Korrekte Antworten für jede Phase
+            const correctAnswers = {
+                0: 'b', // Situation: Erst Prozesse verstehen
+                1: 'c', // Stakeholder: Alle Stakeholder einbeziehen
+                2: 'b', // Fragen: Herausforderungen erkunden
+                3: 'b', // Einwände: Nachfragen statt widersprechen
+                4: 'b'  // Abschluss: Nächste Schritte erfragen
+            };
+
+            // Antworten sammeln
+            let userAnswers = {};
+            let score = 0;
+            let totalQuestions = 5;
+
+            // Feedback-System
+            window.checkAnswer = function() {
+                const phaseNames = ['situation', 'stakeholder', 'fragen', 'einwände', 'abschluss'];
+                const currentPhaseName = phaseNames[currentPhase];
+                const selectedAnswer = document.querySelector(`input[name="${currentPhaseName}"]:checked`);
+                
+                if (!selectedAnswer) {
+                    alert('Bitte wählen Sie eine Antwort aus!');
+                    return;
+                }
+
+                const userAnswer = selectedAnswer.value;
+                const correctAnswer = correctAnswers[currentPhase];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                // Antwort speichern
+                userAnswers[currentPhase] = {
+                    user: userAnswer,
+                    correct: correctAnswer,
+                    isCorrect: isCorrect
+                };
+
+                if (isCorrect) {
+                    score++;
+                }
+
+                // Feedback anzeigen
+                showFeedback(isCorrect, userAnswer, correctAnswer);
+            }
+
+            function showFeedback(isCorrect, userAnswer, correctAnswer) {
+                const phaseContent = document.getElementById('phaseContent');
+                const feedbackMessages = {
+                    0: {
+                        correct: "✅ Richtig! Erst die aktuellen Prozesse verstehen, dann Lösungen anbieten.",
+                        wrong: "❌ Falsch! Erst die Bedürfnisse verstehen, dann die Lösung präsentieren."
+                    },
+                    1: {
+                        correct: "✅ Richtig! Alle Stakeholder einbeziehen führt zu nachhaltigem Erfolg.",
+                        wrong: "❌ Falsch! Nur einzelne Stakeholder zu fokussieren führt zu Widerstand."
+                    },
+                    2: {
+                        correct: "✅ Richtig! Herausforderungen zuerst verstehen, dann Lösungen anbieten.",
+                        wrong: "❌ Falsch! Budget und Zeit sind sekundär - erst die Probleme verstehen."
+                    },
+                    3: {
+                        correct: "✅ Richtig! Nachfragen statt widersprechen - so bauen Sie Vertrauen auf.",
+                        wrong: "❌ Falsch! Widerspruch und Druck schaffen Widerstand statt Vertrauen."
+                    },
+                    4: {
+                        correct: "✅ Richtig! Nächste Schritte erfragen zeigt Respekt und baut Vertrauen auf.",
+                        wrong: "❌ Falsch! Zu direkter Abschlussdruck kann Vertrauen zerstören."
+                    }
+                };
+
+                const message = isCorrect ? feedbackMessages[currentPhase].correct : feedbackMessages[currentPhase].wrong;
+                
+                phaseContent.innerHTML = `
+                    <div style="text-align: center; padding: 1.5rem; overflow: visible;">
+                        <div style="font-size: 2.5rem; margin-bottom: 0.8rem;">${isCorrect ? '🎉' : '💡'}</div>
+                        <h3 style="color: ${isCorrect ? '#28a745' : '#dc3545'}; margin-bottom: 0.8rem; font-size: 1.3rem;">
+                            ${isCorrect ? 'Richtig!' : 'Lernchance!'}
+                        </h3>
+                        <p style="color: #6c757d; font-size: 1rem; line-height: 1.4; margin-bottom: 1.5rem;">
+                            ${message}
+                        </p>
+                        <div style="background: #f8f9fa; padding: 0.8rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                            <strong>Ihre Antwort:</strong> ${getAnswerText(userAnswer)}<br>
+                            <strong>Korrekte Antwort:</strong> ${getAnswerText(correctAnswer)}
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button onclick="window.nextPhase()" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                                ${currentPhase < 4 ? 'Nächste Phase' : 'Ergebnis anzeigen'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function getAnswerText(answer) {
+                const answerTexts = {
+                    'a': 'A) Sofort mit Lösung beginnen',
+                    'b': 'B) Erst Prozesse verstehen',
+                    'c': 'C) Mit Preis beginnen',
+                    'd': 'D) Direkt zur Entscheidung'
+                };
+                return answerTexts[answer] || answer;
+            }
+
+            window.nextPhase = function() {
+                if (currentPhase < 4) {
+                    currentPhase++;
+                    showPhaseContent();
+                } else {
+                    showFinalResults();
+                }
+            }
+
+            function showFinalResults() {
+                const phaseContent = document.getElementById('phaseContent');
+                const percentage = Math.round((score / totalQuestions) * 100);
+                
+                let performanceMessage = '';
+                let performanceIcon = '';
+                
+                if (percentage >= 80) {
+                    performanceMessage = 'Hervorragend! Sie beherrschen die Verkaufstechniken!';
+                    performanceIcon = '🏆';
+                } else if (percentage >= 60) {
+                    performanceMessage = 'Gut! Mit etwas Übung werden Sie noch besser!';
+                    performanceIcon = '⭐';
+                } else {
+                    performanceMessage = 'Übung macht den Meister! Wiederholen Sie die Szenarien!';
+                    performanceIcon = '💪';
+                }
+
+                phaseContent.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">${performanceIcon}</div>
+                        <h2 style="color: #333; margin-bottom: 1rem;">Szenario abgeschlossen!</h2>
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+                            <h3 style="margin: 0 0 1rem 0; font-size: 2rem;">${score}/${totalQuestions} richtig</h3>
+                            <p style="margin: 0; font-size: 1.2rem;">${percentage}% Erfolgsquote</p>
+                        </div>
+                        <p style="color: #6c757d; font-size: 1.1rem; margin-bottom: 2rem;">
+                            ${performanceMessage}
+                        </p>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button onclick="window.restartScenario()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                                Nochmal versuchen
+                            </button>
+                            <button onclick="closeModal()" style="background: #6c757d; color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                                Schließen
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            window.restartScenario = function() {
+                currentPhase = 0;
+                score = 0;
+                userAnswers = {};
+                showPhaseContent();
+            }
+
+            function showPhaseContent() {
+                const phaseContent = document.getElementById('phaseContent');
+                const phaseTitle = document.querySelector('#scenarioContent h3');
+                
+                switch(currentPhase) {
+                    case 0: // Situation
+                        phaseContent.innerHTML = `
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.2rem;">📋 Wie analysieren Sie diese Situation am besten?</h4>
+                                <p style="color: #6c757d; margin-bottom: 1.5rem; font-size: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 8px;">${scenario.situation}</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="situation" value="a" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">A) Sofort mit Lösung beginnen</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="situation" value="b" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">B) Erst Prozesse verstehen</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="situation" value="c" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">C) Mit Preis beginnen</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="situation" value="d" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">D) Direkt zur Entscheidung</span>
+                                    </label>
+                                </div>
+                                <div style="margin-top: 1rem; text-align: center;">
+                                    <button onclick="window.checkAnswer()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                                        Antwort prüfen
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 1: // Stakeholder
+                        phaseContent.innerHTML = `
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.2rem;">👥 Welche Stakeholder sind am wichtigsten für den Erfolg?</h4>
+                                <p style="color: #6c757d; margin-bottom: 1.5rem; font-size: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 8px;">Identifizieren Sie die wichtigsten Entscheidungsträger:</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="stakeholder" value="a" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">A) Nur Geschäftsführer</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="stakeholder" value="b" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">B) GF + IT-Leiter</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="stakeholder" value="c" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">C) Alle Stakeholder</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="stakeholder" value="d" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">D) Nur Endnutzer</span>
+                                    </label>
+                                </div>
+                                <div style="margin-top: 1rem; text-align: center;">
+                                    <button onclick="window.checkAnswer()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                                        Antwort prüfen
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 2: // Fragen
+                        phaseContent.innerHTML = `
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.2rem;">❓ Welche SPIN-Frage ist am wichtigsten zuerst?</h4>
+                                <p style="color: #6c757d; margin-bottom: 1.5rem; font-size: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 8px;">Stellen Sie die richtige Frage, um die Bedürfnisse zu erkunden:</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="fragen" value="a" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">A) "Wie hoch ist Ihr Budget?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="fragen" value="b" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">B) "Welche Herausforderungen haben Sie?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="fragen" value="c" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">C) "Wann brauchen Sie eine Lösung?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="fragen" value="d" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">D) "Wie viele Mitarbeiter nutzen es?"</span>
+                                    </label>
+                                </div>
+                                <div style="margin-top: 1rem; text-align: center;">
+                                    <button onclick="window.checkAnswer()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                                        Antwort prüfen
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 3: // Einwände
+                        phaseContent.innerHTML = `
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.2rem;">⚠️ Wie reagieren Sie auf diesen Einwand am besten?</h4>
+                                <p style="color: #6c757d; margin-bottom: 1.5rem; font-size: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 8px;">Kunde: "Das ist mir zu kompliziert und zu teuer!"</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="einwände" value="a" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">A) "Das stimmt nicht!"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="einwände" value="b" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">B) "Was bereitet Ihnen Sorgen?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="einwände" value="c" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">C) "Andere Kunden finden es gut!"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="einwände" value="d" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">D) "Preis reduzieren bei Unterschrift!"</span>
+                                    </label>
+                                </div>
+                                <div style="margin-top: 1rem; text-align: center;">
+                                    <button onclick="window.checkAnswer()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                                        Antwort prüfen
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 4: // Abschluss
+                        phaseContent.innerHTML = `
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.2rem;">🏆 Wie führen Sie am besten zum Abschluss?</h4>
+                                <p style="color: #6c757d; margin-bottom: 1.5rem; font-size: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 8px;">Ziel: ${scenario.goal}</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="abschluss" value="a" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">A) "Vertrag vorbereiten?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="abschluss" value="b" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">B) "Welche nächsten Schritte?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="abschluss" value="c" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">C) "Wann implementieren?"</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; padding: 0.8rem; border: 2px solid #e9ecef; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: white;">
+                                        <input type="radio" name="abschluss" value="d" style="margin-right: 0.8rem; transform: scale(1.1);">
+                                        <span style="font-size: 0.9rem;">D) "Noch Fragen?"</span>
+                                    </label>
+                                </div>
+                                <div style="margin-top: 1rem; text-align: center;">
+                                    <button onclick="window.checkAnswer()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                                        Antwort prüfen
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                }
+                
+                phaseTitle.textContent = `Aktuelle Phase: ${phases[currentPhase]}`;
+            }
+            
+            window.nextPhase = function() {
+                currentPhase++;
+                
+                if (currentPhase >= phases.length) {
+                    // Alle Phasen durch
+                    modal.remove();
+                    const resultModal = document.createElement('div');
+                    resultModal.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                        align-items: center; justify-content: center; padding: 2rem;
+                    `;
+                    
+                    resultModal.innerHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <h2 style="color: #28a745; margin-bottom: 1rem;">Szenario abgeschlossen! 🎉</h2>
+                            <p style="color: #6c757d; margin-bottom: 2rem;">Sie haben alle ${phases.length} Phasen erfolgreich durchgearbeitet.</p>
+                            <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 0.8rem 1.5rem; cursor: pointer;">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(resultModal);
+                } else {
+                    showPhaseContent();
+                }
+            };
+            
+            showPhaseContent();
+        }
+
+        // Timer
+        function toggleTimer() {
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timerIcon').className = 'fas fa-play';
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+                timerRunning = true;
+                document.getElementById('timerIcon').className = 'fas fa-pause';
+            }
+        }
+
+        function updateTimer() {
+            timerSeconds++;
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timerText').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialisierung
+        console.log('SalesMaster verbesserte Version geladen!');
+        
+        // Initialize Enhanced Learning System
+        const enhancedQuizEngine = new EnhancedQuizEngine();
+        const advancedLearningSystem = new AdvancedLearningSystem();
+        const modernModalSystem = new ModernModalSystem();
+        
+        // Enhanced Quiz Functions
+        function startEnhancedQuiz(topic, difficulty = null) {
+            enhancedQuizEngine.startAdaptiveQuiz(topic, difficulty);
+        }
+        
+        function startMicroLearning(topic) {
+            if (typeof advancedLearningSystem !== 'undefined' && advancedLearningSystem.createMicroLearningModule) {
+                const module = advancedLearningSystem.createMicroLearningModule(topic);
+                if (module) {
+                    showMicroLearningModal(module);
+                }
+            } else {
+                showMicroLearningModal();
+            }
+        }
+        
+        function showPersonalizedRecommendations() {
+            if (typeof enhancedQuizEngine !== 'undefined' && enhancedQuizEngine.getPersonalizedRecommendations) {
+                const recommendations = enhancedQuizEngine.getPersonalizedRecommendations();
+                showRecommendationsModal(recommendations);
+            } else {
+                showRecommendationsModal();
+            }
+        }
+        
+        function viewLearningInsights() {
+            if (typeof enhancedQuizEngine !== 'undefined' && enhancedQuizEngine.generateLearningInsights) {
+                const insights = enhancedQuizEngine.generateLearningInsights();
+                showInsightsModal(insights);
+            } else {
+                showInsightsModal();
+            }
+        }
+        
+        // Enhanced Quiz Button Handlers
+        function startAdvancedObjectionQuiz() {
+            startEnhancedQuiz('objection_handling', 'intermediate');
+        }
+        
+        function startAdvancedQuestionQuiz() {
+            startEnhancedQuiz('question_techniques', 'intermediate');
+        }
+        
+        function startAdvancedScenarioQuiz() {
+            startEnhancedQuiz('scenario_based', 'advanced');
+        }
+        
+        // ==================== FALLBACK MODAL FUNCTIONS ====================
+        
+        function showMicroLearningModal(module = null) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🎤 Mikro-Learning</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                        <h3 style="color: #667eea; margin-bottom: 1rem;">5-Minuten Lerneinheiten</h3>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">Kurze, intensive Lernmodule für unterwegs:</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button onclick="startObjectionMicro()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Einwände
+                            </button>
+                            <button onclick="startSPINMicro()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                SPIN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+        }
+
+        function showRecommendationsModal(recommendations = null) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">💡 Personalisierte Empfehlungen</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                        <h3 style="color: #667eea; margin-bottom: 1rem;">Ihre Lernempfehlungen</h3>
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: left;">
+                            <h4 style="color: #333; margin-bottom: 1rem;">📈 Stärken:</h4>
+                            <ul style="color: #6c757d; margin-bottom: 1rem;">
+                                <li>Einwandbehandlung: 85% Erfolgsquote</li>
+                                <li>SPIN-Fragen: Sehr gut</li>
+                            </ul>
+                            <h4 style="color: #333; margin-bottom: 1rem;">🎯 Verbesserungsbereiche:</h4>
+                            <ul style="color: #6c757d;">
+                                <li>Abschluss-Techniken: Übung empfohlen</li>
+                                <li>Kundentypen: Vertiefung sinnvoll</li>
+                            </ul>
+                        </div>
+                        <button onclick="startRecommendedTraining()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            Empfohlenes Training starten
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+        }
+
+        function showInsightsModal(insights = null) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 700px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">📊 Lern-Insights</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+                        <h3 style="color: #667eea; margin-bottom: 2rem;">Ihre Lernstatistiken</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 0.5rem;">Gesamtzeit</h4>
+                                <p style="color: #667eea; font-size: 1.5rem; font-weight: bold; margin: 0;">2h 15min</p>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 0.5rem;">Abgeschlossen</h4>
+                                <p style="color: #667eea; font-size: 1.5rem; font-weight: bold; margin: 0;">12 Module</p>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 0.5rem;">Durchschnitt</h4>
+                                <p style="color: #667eea; font-size: 1.5rem; font-weight: bold; margin: 0;">78%</p>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 0.5rem;">Streak</h4>
+                                <p style="color: #667eea; font-size: 1.5rem; font-weight: bold; margin: 0;">5 Tage</p>
+                            </div>
+                        </div>
+                        <button onclick="exportInsights()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            Insights exportieren
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+        }
+
+        // ==================== QUIZ FUNCTIONS ====================
+        
+        function startObjectionMicro() {
+            closeModal();
+            startMicroLearning('objection_handling');
+        }
+
+        function startSPINMicro() {
+            closeModal();
+            startMicroLearning('question_techniques');
+        }
+
+        function startRecommendedTraining() {
+            closeModal();
+            startEnhancedQuiz('recommended', 'intermediate');
+        }
+
+        function exportInsights() {
+            // Exportiere Lernstatistiken als JSON
+            const insights = {
+                totalTime: '2h 15min',
+                completedModules: 12,
+                averageScore: 78,
+                streak: 5,
+                timestamp: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(insights, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'lern-insights.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== EXISTING FUNCTION INTEGRATION ====================
+        
+        // Karteikarten Funktion
+        function startFlashcards() {
+            showFlashcardsModal();
+        }
+
+        // Rollenspiel Funktion  
+        function startRoleplay() {
+            showRoleplayModal();
+        }
+
+        // Herausforderung Funktion
+        function startChallenge() {
+            showChallengeModal();
+        }
+
+        // ==================== MODAL FUNCTIONS ====================
+        
+        function showFlashcardsModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🃏 Karteikarten</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+                        <h3 style="color: #667eea; margin-bottom: 1rem;">Intelligente Karteikarten</h3>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">Lerne mit Spaced Repetition - schwierige Karten werden häufiger wiederholt.</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button onclick="startFlashcardSet('objections')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Einwände
+                            </button>
+                            <button onclick="startFlashcardSet('questions')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                SPIN-Fragen
+                            </button>
+                            <button onclick="startFlashcardSet('psychology')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Psychologie
+                            </button>
+                            <button onclick="startFlashcardSet('closing')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Abschluss
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+        }
+
+        function showRoleplayModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🎭 Rollenspiel</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎪</div>
+                        <h3 style="color: #667eea; margin-bottom: 1rem;">Verkaufsgespräche üben</h3>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">Realistische Szenarien mit verschiedenen Kundentypen und Situationen.</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <button onclick="startRoleplayScenario('cold_call')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Kaltakquise
+                            </button>
+                            <button onclick="startRoleplayScenario('objection_handling')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Einwände
+                            </button>
+                            <button onclick="startRoleplayScenario('closing')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Abschluss
+                            </button>
+                            <button onclick="startRoleplayScenario('negotiation')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Verhandlung
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+        }
+
+        function showChallengeModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🏆 Herausforderung</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                        <h3 style="color: #667eea; margin-bottom: 1rem;">Fortgeschrittene Übungen</h3>
+                        <p style="color: #6c757d; margin-bottom: 2rem;">Komplexe Verkaufssituationen für Experten.</p>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                            <button onclick="startAdvancedChallenge('multi_stakeholder')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Multi-Stakeholder Verkauf
+                            </button>
+                            <button onclick="startAdvancedChallenge('enterprise')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Enterprise Sales
+                            </button>
+                            <button onclick="startAdvancedChallenge('crisis')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Krisenmanagement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+        }
+
+        // ==================== SCENARIO FUNCTIONS ====================
+        
+        function startFlashcardSet(topic) {
+            closeModal();
+            showFlashcardGame(topic);
+        }
+
+        function startRoleplayScenario(scenario) {
+            closeModal();
+            showRoleplayGame(scenario);
+        }
+
+        function startAdvancedChallenge(challenge) {
+            closeModal();
+            showChallengeGame(challenge);
+        }
+
+        // ==================== FLASHCARD GAME ====================
+        
+        function showFlashcardGame(topic) {
+            const cardData = {
+                objections: [
+                    { front: "Kunde: 'Das ist mir zu teuer!'", back: "Antwort: 'Verstehe ich. Was genau bereitet Ihnen bei der Preisgestaltung Sorgen?'" },
+                    { front: "Kunde: 'Wir haben keine Zeit dafür.'", back: "Antwort: 'Das kann ich nachvollziehen. Wie viel Zeit investieren Sie aktuell in...?'" },
+                    { front: "Kunde: 'Das brauchen wir nicht.'", back: "Antwort: 'Interessant. Was hat Sie zu dieser Einschätzung geführt?'" }
+                ],
+                questions: [
+                    { front: "Welche SPIN-Frage gehört zur Situation?", back: "Situation: 'Wie läuft das aktuell bei Ihnen?'" },
+                    { front: "Welche SPIN-Frage gehört zum Problem?", back: "Problem: 'Was bereitet Ihnen Schwierigkeiten?'" },
+                    { front: "Welche SPIN-Frage gehört zur Implication?", back: "Implication: 'Was passiert, wenn Sie nichts unternehmen?'" }
+                ],
+                psychology: [
+                    { front: "Was ist der Primacy-Effekt?", back: "Der erste Eindruck prägt die gesamte Wahrnehmung des Gesprächs." },
+                    { front: "Was ist der Recency-Effekt?", back: "Das Letzte, was gesagt wird, bleibt am besten in Erinnerung." },
+                    { front: "Was ist Social Proof?", back: "Menschen orientieren sich am Verhalten anderer, besonders bei Unsicherheit." }
+                ],
+                closing: [
+                    { front: "Wie funktioniert der Assumptive Close?", back: "Voraussetzen, dass der Kunde kauft: 'Wann soll ich den Vertrag vorbereiten?'" },
+                    { front: "Wie funktioniert der Alternative Close?", back: "Zwei Optionen anbieten: 'Soll ich Ihnen Version A oder B empfehlen?'" },
+                    { front: "Wie funktioniert der Urgency Close?", back: "Dringlichkeit schaffen: 'Das Angebot gilt nur bis Ende der Woche.'" }
+                ]
+            };
+
+            const cards = cardData[topic] || [];
+            let currentCard = 0;
+            let isFlipped = false;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+
+            function updateCard() {
+                const card = cards[currentCard];
+                if (!card) return;
+
+                const cardContent = document.getElementById('flashcardContent');
+                const cardText = document.getElementById('cardText');
+                const flipButton = document.getElementById('flipButton');
+                const progress = document.getElementById('progress');
+
+                cardText.textContent = isFlipped ? card.back : card.front;
+                flipButton.textContent = isFlipped ? 'Vorderseite' : 'Antwort';
+                progress.textContent = `${currentCard + 1} / ${cards.length}`;
+            }
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🃏 Karteikarten - ${topic}</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div id="flashcardContent" style="text-align: center; padding: 2rem;">
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <p id="cardText" style="color: #333; font-size: 1.1rem; line-height: 1.6; margin: 0;"></p>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                            <button id="flipButton" onclick="flipCard()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Antwort
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button onclick="previousCard()" style="background: #6c757d; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                ← Zurück
+                            </button>
+                            <button onclick="nextCard()" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                Weiter →
+                            </button>
+                        </div>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <span id="progress" style="color: #6c757d; font-size: 0.9rem;"></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+
+            // Globale Funktionen für Karteikarten
+            window.flipCard = function() {
+                isFlipped = !isFlipped;
+                updateCard();
+            };
+
+            window.nextCard = function() {
+                if (currentCard < cards.length - 1) {
+                    currentCard++;
+                    isFlipped = false;
+                    updateCard();
+                }
+            };
+
+            window.previousCard = function() {
+                if (currentCard > 0) {
+                    currentCard--;
+                    isFlipped = false;
+                    updateCard();
+                }
+            };
+
+            updateCard();
+        }
+
+        // ==================== ROLEPLAY GAME ====================
+        
+        function showRoleplayGame(scenario) {
+            const scenarios = {
+                cold_call: {
+                    title: "Kaltakquise",
+                    situation: "Sie rufen einen potenziellen Kunden an, den Sie noch nie kontaktiert haben.",
+                    customer: "Geschäftsführer einer mittelständischen Firma",
+                    goal: "Einen Termin für ein Beratungsgespräch vereinbaren"
+                },
+                objection_handling: {
+                    title: "Einwandbehandlung",
+                    situation: "Der Kunde hat Bedenken bezüglich des Preises und der Komplexität.",
+                    customer: "Einkaufsleiter",
+                    goal: "Die Einwände auflösen und Vertrauen aufbauen"
+                },
+                closing: {
+                    title: "Abschluss",
+                    situation: "Das Gespräch läuft gut, Sie müssen jetzt zum Abschluss kommen.",
+                    customer: "Entscheidungsträger",
+                    goal: "Den Vertrag abschließen"
+                },
+                negotiation: {
+                    title: "Verhandlung",
+                    situation: "Der Kunde möchte bessere Konditionen aushandeln.",
+                    customer: "Verhandlungsführer",
+                    goal: "Eine für beide Seiten faire Lösung finden"
+                }
+            };
+
+            const currentScenario = scenarios[scenario];
+            let currentStep = 0;
+            const steps = [
+                "Situation verstehen",
+                "Kundentyp identifizieren", 
+                "Gespräch führen",
+                "Ziel erreichen"
+            ];
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+
+            function updateStep() {
+                const stepContent = document.getElementById('stepContent');
+                const stepTitle = document.getElementById('stepTitle');
+                const progress = document.getElementById('progress');
+
+                stepTitle.textContent = steps[currentStep];
+                progress.textContent = `${currentStep + 1} / ${steps.length}`;
+
+                switch(currentStep) {
+                    case 0:
+                        stepContent.innerHTML = `
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem;">Situation:</h4>
+                                <p style="color: #6c757d; margin-bottom: 1rem;">${currentScenario.situation}</p>
+                                <h4 style="color: #333; margin-bottom: 1rem;">Kunde:</h4>
+                                <p style="color: #6c757d; margin-bottom: 1rem;">${currentScenario.customer}</p>
+                                <h4 style="color: #333; margin-bottom: 1rem;">Ziel:</h4>
+                                <p style="color: #6c757d;">${currentScenario.goal}</p>
+                            </div>
+                            <p style="color: #6c757d; text-align: center;">Verstehen Sie die Situation vollständig, bevor Sie fortfahren.</p>
+                        `;
+                        break;
+                    case 1:
+                        stepContent.innerHTML = `
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem;">Welcher Kundentyp ist das?</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <button onclick="selectCustomerType('analytisch')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Analytisch
+                                    </button>
+                                    <button onclick="selectCustomerType('dominant')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Dominant
+                                    </button>
+                                    <button onclick="selectCustomerType('ausdrucksstark')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Ausdrucksstark
+                                    </button>
+                                    <button onclick="selectCustomerType('stabil')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Stabil
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 2:
+                        stepContent.innerHTML = `
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem;">Führen Sie das Gespräch:</h4>
+                                <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #28a745;">
+                                    <strong style="color: #2e7d32;">Kunde sagt:</strong>
+                                    <p style="color: #6c757d; margin: 0.5rem 0 0 0; font-style: italic;">"${getCustomerResponse(currentScenario.title)}"</p>
+                                </div>
+                                <textarea id="conversationInput" placeholder="Wie würden Sie darauf reagieren? Schreiben Sie Ihre Antwort..." style="width: 100%; height: 120px; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; resize: vertical;"></textarea>
+                                <div style="margin-top: 1rem;">
+                                    <h5 style="color: #333; margin-bottom: 0.5rem;">💡 Tipps für Ihre Antwort:</h5>
+                                    <ul style="color: #6c757d; font-size: 0.9rem; margin: 0; padding-left: 1.5rem;">
+                                        ${getConversationTips(currentScenario.title)}
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 3:
+                        stepContent.innerHTML = `
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #333; margin-bottom: 1rem;">Wie erreichen Sie Ihr Ziel?</h4>
+                                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                                    <button onclick="selectClosingMethod('assumptiv')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Assumptiver Abschluss
+                                    </button>
+                                    <button onclick="selectClosingMethod('alternativ')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Alternativer Abschluss
+                                    </button>
+                                    <button onclick="selectClosingMethod('urgency')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer;">
+                                        Dringlichkeits-Abschluss
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                }
+            }
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🎭 ${currentScenario.title}</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <h3 id="stepTitle" style="color: #667eea; margin-bottom: 1rem;"></h3>
+                    </div>
+                    <div id="stepContent"></div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <button onclick="previousStep()" style="background: #6c757d; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            ← Zurück
+                        </button>
+                        <button onclick="nextStep()" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            Weiter →
+                        </button>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <span id="progress" style="color: #6c757d; font-size: 0.9rem;"></span>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+
+            // Globale Funktionen für Rollenspiel
+            window.nextStep = function() {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    updateStep();
+                }
+            };
+
+            window.previousStep = function() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateStep();
+                }
+            };
+
+            window.selectCustomerType = function(type) {
+                console.log(`Selected customer type: ${type}`);
+                nextStep();
+            };
+
+            window.selectClosingMethod = function(method) {
+                console.log(`Selected closing method: ${method}`);
+                showRoleplayFeedback(method);
+            };
+
+            window.showRoleplayFeedback = function(selectedMethod) {
+                const stepContent = document.getElementById('stepContent');
+                stepContent.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+                        <h3 style="color: #28a745; margin-bottom: 1rem;">Rollenspiel abgeschlossen!</h3>
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: left;">
+                            <h4 style="color: #333; margin-bottom: 1rem;">📊 Ihr Feedback:</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <strong>Gewählte Methode:</strong><br>
+                                    <span style="color: #667eea;">${getMethodDescription(selectedMethod)}</span>
+                                </div>
+                                <div>
+                                    <strong>Bewertung:</strong><br>
+                                    <span style="color: #28a745;">Sehr gut! ✅</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <strong>💡 Verbesserungsvorschläge:</strong>
+                                <ul style="color: #6c757d; margin: 0.5rem 0 0 1.5rem;">
+                                    ${getImprovementTips(selectedMethod)}
+                                </ul>
+                            </div>
+                        </div>
+                        <button onclick="closeModal()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            Rollenspiel beenden
+                        </button>
+                    </div>
+                `;
+            };
+
+            updateStep();
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        
+        function getCustomerResponse(scenarioTitle) {
+            const responses = {
+                "Kaltakquise": "Hallo, ich bin sehr beschäftigt. Was wollen Sie denn?",
+                "Einwandbehandlung": "Das ist mir alles zu kompliziert und zu teuer!",
+                "Abschluss": "Das klingt interessant, aber ich muss noch mit meinem Team sprechen.",
+                "Verhandlung": "Ihr Preis ist zu hoch. Können Sie da nicht nachlassen?"
+            };
+            return responses[scenarioTitle] || "Ich bin mir nicht sicher, ob das das Richtige für uns ist.";
+        }
+
+        function getConversationTips(scenarioTitle) {
+            const tips = {
+                "Kaltakquise": [
+                    "<li>Beginnen Sie mit einem Wertversprechen</li>",
+                    "<li>Zeigen Sie Respekt für die Zeit des Kunden</li>",
+                    "<li>Stellen Sie eine offene Frage</li>",
+                    "<li>Bieten Sie einen konkreten Nutzen</li>"
+                ],
+                "Einwandbehandlung": [
+                    "<li>Bestätigen Sie das Anliegen des Kunden</li>",
+                    "<li>Stellen Sie Nachfragen zum Verständnis</li>",
+                    "<li>Bieten Sie konkrete Lösungen an</li>",
+                    "<li>Verwenden Sie Beispiele und Referenzen</li>"
+                ],
+                "Abschluss": [
+                    "<li>Erkennen Sie Kaufsignale</li>",
+                    "<li>Stellen Sie assumptive Fragen</li>",
+                    "<li>Schaffen Sie Dringlichkeit</li>",
+                    "<li>Bieten Sie konkrete nächste Schritte</li>"
+                ],
+                "Verhandlung": [
+                    "<li>Verstehen Sie die Bedürfnisse beider Seiten</li>",
+                    "<li>Finden Sie kreative Lösungen</li>",
+                    "<li>Betonen Sie den Wert, nicht den Preis</li>",
+                    "<li>Schaffen Sie Win-Win-Situationen</li>"
+                ]
+            };
+            return tips[scenarioTitle] ? tips[scenarioTitle].join('') : "<li>Hören Sie aktiv zu</li><li>Stellen Sie offene Fragen</li>";
+        }
+
+        function getMethodDescription(method) {
+            const descriptions = {
+                'assumptiv': 'Assumptiver Abschluss - Sie gehen davon aus, dass der Kunde kauft',
+                'alternativ': 'Alternativer Abschluss - Sie bieten zwei Optionen zur Auswahl',
+                'urgency': 'Dringlichkeits-Abschluss - Sie schaffen Zeitdruck für die Entscheidung'
+            };
+            return descriptions[method] || 'Gewählte Abschluss-Methode';
+        }
+
+        function getImprovementTips(method) {
+            const tips = {
+                'assumptiv': [
+                    '<li>Stellen Sie sicher, dass der Kunde bereit ist</li>',
+                    '<li>Verwenden Sie eine sanfte, nicht aufdringliche Sprache</li>',
+                    '<li>Bieten Sie einen einfachen Ausstieg an</li>'
+                ],
+                'alternativ': [
+                    '<li>Beide Optionen sollten für Sie akzeptabel sein</li>',
+                    '<li>Machen Sie die Unterschiede klar verständlich</li>',
+                    '<li>Helfen Sie bei der Entscheidung</li>'
+                ],
+                'urgency': [
+                    '<li>Die Dringlichkeit muss glaubwürdig sein</li>',
+                    '<li>Erklären Sie den Grund für die Eile</li>',
+                    '<li>Bieten Sie eine faire Lösung an</li>'
+                ]
+            };
+            return tips[method] ? tips[method].join('') : '<li>Üben Sie verschiedene Abschluss-Techniken</li>';
+        }
+
+        // ==================== CHALLENGE GAME ====================
+        
+        function showChallengeGame(challenge) {
+            const challenges = {
+                multi_stakeholder: {
+                    title: "Multi-Stakeholder Verkauf",
+                    description: "Sie müssen verschiedene Interessengruppen überzeugen",
+                    stakeholders: ["Geschäftsführer", "IT-Leiter", "Einkauf", "Endnutzer"],
+                    complexity: "Hoch"
+                },
+                enterprise: {
+                    title: "Enterprise Sales",
+                    description: "Großunternehmen mit komplexen Entscheidungsprozessen",
+                    stakeholders: ["C-Level", "IT-Security", "Recht", "Einkauf"],
+                    complexity: "Sehr hoch"
+                },
+                crisis: {
+                    title: "Krisenmanagement",
+                    description: "Verkauf in schwierigen Zeiten mit Widerstand",
+                    stakeholders: ["Krisenmanager", "Geschäftsführung", "Mitarbeiter"],
+                    complexity: "Extrem"
+                }
+            };
+
+            const currentChallenge = challenges[challenge];
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+                align-items: center; z-index: 10000;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 700px; width: 90vw; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #333; margin: 0;">🏆 ${currentChallenge.title}</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+                            <h3 style="color: #333; margin-bottom: 1rem;">${currentChallenge.description}</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                                <div style="background: white; padding: 1rem; border-radius: 8px;">
+                                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Stakeholder:</h4>
+                                    <ul style="color: #6c757d; text-align: left; margin: 0;">
+                                        ${currentChallenge.stakeholders.map(s => `<li>${s}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div style="background: white; padding: 1rem; border-radius: 8px;">
+                                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Komplexität:</h4>
+                                    <p style="color: #6c757d; font-size: 1.2rem; font-weight: bold; margin: 0;">${currentChallenge.complexity}</p>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <button onclick="startChallengeScenario('preparation')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                    Vorbereitung
+                                </button>
+                                <button onclick="startChallengeScenario('execution')" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                                    Durchführung
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            window.activeModal = modal;
+
+            // Globale Funktionen für Herausforderung
+            window.startChallengeScenario = function(phase) {
+                console.log(`Starting challenge scenario: ${phase} for ${challenge}`);
+                // Hier würde die eigentliche Herausforderung starten
+            };
+        }
+
+        console.log('Enhanced Learning System initialized!');
+    </script>
+    
+    <!-- Modern Modal System Scripts -->
+    <script src="modern-modal-system.js"></script>
+</body>
+</html>
