@@ -22,5 +22,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom']
+  },
+  define: {
+    global: 'globalThis'
+  },
+  esbuild: {
+    target: 'es2020'
   }
 })
