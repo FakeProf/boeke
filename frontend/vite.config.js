@@ -28,5 +28,10 @@ export default defineConfig({
   },
   esbuild: {
     target: 'es2020'
+  },
+  resolve: {
+    alias: {
+      '@rollup/rollup-linux-x64-gnu': 'rollup'
+    }
   }
 })
