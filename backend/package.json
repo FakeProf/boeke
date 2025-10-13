@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "echo 'Backend build completed - no build step required'"
   },
   "dependencies": {
     "cors": "^2.8.5",
