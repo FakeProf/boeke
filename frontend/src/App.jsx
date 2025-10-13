@@ -7,9 +7,10 @@ function Layout({ children }) {
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
-          <h1>🎯 SalesMaster</h1>
+          <NavLink to="/" className="logo-link">
+            <h1>🎯 SalesMaster</h1>
+          </NavLink>
           <nav className="nav-tabs">
-            <NavLink to="/" end className="nav-tab">Home</NavLink>
             <NavLink to="/training" className="nav-tab">Vertriebs-Training</NavLink>
             <NavLink to="/practice" className="nav-tab">Übungsmodus</NavLink>
             <NavLink to="/scenarios" className="nav-tab">Szenarien</NavLink>
