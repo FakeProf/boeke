@@ -28,16 +28,5 @@ Thumbs.db
 # Logs
 *.log
 
-# Old static files (exclude from React version)
-index.html
-script.js
-styles.css
-modern-ui-styles.css
-enhanced-styles.css
-enhanced-quiz-engine.js
-advanced-learning-system.js
-modern-modal-system.js
-datenschutz.html
-impressum.html
-agb.html
-cookies.html
+# Old static files (moved to separate folder)
+# These are now in a different directory to avoid confusion

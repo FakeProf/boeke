@@ -38,11 +38,11 @@ Eine moderne Verkaufsschulungs-Plattform mit React Frontend und Express Backend.
 ### Installation
 ```bash
 # Repository klonen
-git clone <repository-url>
+git clone https://github.com/FakeProf/salesmaster.git
 cd salesmaster
 
 # Dependencies installieren
-npm install
+npm run install:all
 
 # Entwicklungsserver starten (Frontend + Backend)
 npm run dev
@@ -61,6 +61,8 @@ salesmaster/
 │   │   ├── App.jsx    # Hauptkomponente
 │   │   ├── App.css    # Styles
 │   │   └── main.jsx   # Entry Point
+│   ├── index.html     # HTML Entry Point
+│   ├── vite.config.js # Vite Konfiguration
 │   └── package.json
 ├── backend/           # Express API
 │   ├── index.js      # Server
@@ -85,7 +87,7 @@ npm run dev:frontend     # Nur Frontend
 npm run dev:backend      # Nur Backend
 
 # Build
-npm run build            # Frontend builden
+npm run build            # Frontend + Backend builden
 npm run build:frontend   # Frontend builden
 npm run build:backend    # Backend builden
 
